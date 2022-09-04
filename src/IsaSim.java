@@ -28,10 +28,13 @@ public class IsaSim {
             int opcode = instr & 0x7f;
             int rd = (instr >> 7) & 0x01f;
             int rs1 = (instr >> 15) & 0x01f;
-            int imm = (instr >> 20);
+            int rs2 = (instr >> 20) & 0x01f;
+            int imm = (instr >> 20); // immediate
 
             switch (opcode) {
-
+                case 51:
+                    reg[rd] = reg[rs1] + reg[rs2];
+                    break;
                 case 0x13:
                     reg[rd] = reg[rs1] + imm;
                     break;
