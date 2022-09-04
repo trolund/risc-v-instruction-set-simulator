@@ -3,22 +3,8 @@ public class IsaSim {
     static int pc;
     static int reg[] = new int[4];
 
-    // Here the first program hard coded as an array
-/*
-    static int progr[] = {
-            // As minimal RISC-V assembler example
-            0x00200093, // addi x1 x0 2
-            0x00300113, // addi x2 x0 3
-            0x002081b3, // add x3 x1 x2
-    };
-*/
-
-    public static void main(String[] args) {
-        System.out.println("Hello RISC-V World!");
-
-
-        ProgramLoader loader = new ProgramLoader();
-        int[] progr = loader.loadTest("first", ProgramLoader.ProgramType.BINARY);
+    public void runProgram(int[] progr) {
+        // System.out.println("Hello RISC-V World!");
 
         pc = 0;
 
