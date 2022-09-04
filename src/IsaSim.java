@@ -18,7 +18,7 @@ public class IsaSim {
 
 
         ProgramLoader loader = new ProgramLoader();
-        int[] progr = loader.loadProgram("first", ProgramLoader.ProgramType.BINARY);
+        int[] progr = loader.loadTest("first", ProgramLoader.ProgramType.BINARY);
 
         pc = 0;
 

@@ -8,11 +8,11 @@ public class ProgramLoader {
         BINARY
     }
 
-    public void loadProgram(String programName) {
-        loadProgram(programName, ProgramType.ASSEMBLY);
+    public void loadTest(String programName) {
+        loadTest(programName, ProgramType.ASSEMBLY);
     }
 
-    public int[] loadProgram(String programName, ProgramType programType) {
+    public int[] loadTest(String programName, ProgramType programType) {
         InputStream inputStream = null;
         try {
             ClassLoader classLoader = getClass().getClassLoader();
@@ -22,6 +22,30 @@ public class ProgramLoader {
         }catch (Exception e) {
             System.out.println(e);
             System.err.println("Failed to load program: " + programName);
+        }
+        finally {
+            if (inputStream != null) {
+                try {
+                    inputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return new int[0];
+    }
+
+    public int[] loadProgram(String url) {
+        InputStream inputStream = null;
+        try {
+            ClassLoader classLoader = getClass().getClassLoader();
+            File file = new File(url);
+            inputStream = new FileInputStream(file);
+            return transformInputStream(inputStream);
+        }catch (Exception e) {
+            System.out.println(e);
+            System.err.println("Failed to load program: " + url);
         }
         finally {
             if (inputStream != null) {
