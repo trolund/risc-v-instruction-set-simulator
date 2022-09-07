@@ -1,6 +1,5 @@
 import Instruction.R;
 import Instruction.I;
-import Instruction.abstact.Instruction;
 
 public class ISASimulator {
 
