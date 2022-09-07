@@ -2,6 +2,8 @@ package Instruction;
 
 import Instruction.abstact.RD;
 
-public class UJ extends RD {
+public class U extends RD {
     int imm;
 }
+
+

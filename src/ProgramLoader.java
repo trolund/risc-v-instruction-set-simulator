@@ -73,7 +73,7 @@ public class ProgramLoader {
     }
 
     private int processLine(String line) {
-        if(line.isBlank() || line.isEmpty() || line.charAt(0) == '/') return -1; // discard line
+        if(line.isBlank() || line.isEmpty() || line.charAt(0) == '/' || line.charAt(0) == '#') return -1; // discard line
         String[] parts = line.split("//");
         return Integer.decode(parts[0].trim());
     }

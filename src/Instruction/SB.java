@@ -1,12 +1,11 @@
 package Instruction;
 
-import Instruction.abstact.Instruction;
-
-public class SB extends Instruction {
-    int func;
-    int rs1;
-    int rs2;
+public class SB extends S {
     int imm;
+    int rs2;
+    int rs1;
+
+    public SB(int instr) {
+        super(instr);
+    }
 }
-
-
