@@ -39,7 +39,6 @@ public class ProgramLoader {
     public int[] loadProgram(String url) {
         InputStream inputStream = null;
         try {
-            ClassLoader classLoader = getClass().getClassLoader();
             File file = new File(url);
             inputStream = new FileInputStream(file);
             return transformInputStream(inputStream);

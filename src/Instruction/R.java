@@ -12,9 +12,9 @@ public class R extends RD {
     public R(int instr) {
         rd = (instr >> 7) & 0x1F;
         funct3 = (instr >> 12) & 0x7;
-        rs1 = (instr >> 20) & 0x1F;
-        rs2 = (instr >> 25) & 0x1F;
-        funct7 = (instr>> 32) & 0x7F;
+        rs1 = (instr >> 15) & 0x1F;
+        rs2 = (instr >> 20) & 0x1F;
+        funct7 = (instr>> 25) & 0x7F;
     }
 
 }

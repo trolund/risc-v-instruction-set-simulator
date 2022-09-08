@@ -1,5 +1,6 @@
 import Instruction.R;
 import Instruction.I;
+import jdk.jshell.spi.ExecutionControl;
 
 public class ISASimulator {
 
@@ -25,7 +26,11 @@ public class ISASimulator {
 //            int shamt = (instr >> 20) & 0x01f;
 
             // process the instruction
-            ProcessInstr(instr);
+            try{
+                ProcessInstr(instr);
+            }catch (Exception e){
+                System.err.println(e.getStackTrace());
+            }
 
             pc += 4; // One instruction is four bytes -> move program counter to next instruction 🛠
 
@@ -47,55 +52,22 @@ public class ISASimulator {
         System.out.println();
     }
 
-    private void ProcessInstr(int instr){
+    private void ProcessInstr(int instr) throws ExecutionControl.NotImplementedException {
         // extract opcode
         int opcode = instr & 0x7f;
 
         // map the opcode to the right action's
         switch (opcode) {
             // type R
-            case 0x33: // ADD
+            case 0x33:
                 processR(decoder.process(instr));
                 break;
             // type I
-            case 0x13: // ADDI
+            case 0x13:
                 processI(decoder.process(instr));
                 break;
-//                case 0x13: // AND
-//                    reg[rd] = reg[rs1] & reg[rs2];
-//                    break;
-//                case 0x13: // OR
-//                    reg[rd] = reg[rs1] | reg[rs2];
-//                    break;
-//                case 0x13: // XOR
-//                    reg[rd] = reg[rs1] ^ reg[rs2];
-//                    break;
-//                case 0x13: // ANDI
-//                    reg[rd] = reg[rs1] & imm12;
-//                    break;
-//                case 0x13: // ORI
-//                    reg[rd] = reg[rs1] | imm12;
-//                    break;
-//                case 0x13: // XORI
-//                    reg[rd] = reg[rs1] ^ imm12;
-//                    break;
-//                case 0x13: // SSL
-//                    reg[rd] = reg[rs1] << reg[rs2];
-//                    break;
-//                case 0x13: // SRL
-//                case 0x13: // SRA
-//                    reg[rd] = reg[rs1] >> reg[rs2];
-//                    break;
-//                case 0x13: // SLLI
-//                    reg[rd] = reg[rs1] << shamt;
-//                    break;
-//                case 0x13: // SRLI
-//                case 0x13: // SRAI
-//                    reg[rd] = reg[rs1] >> shamt;
-//                    break;
             default:
                 System.out.println(c.colorText("Opcode " + opcode + " not yet implemented 🛠😤", TUIColors.RED));
-                break;
         }
     }
 
@@ -103,10 +75,48 @@ public class ISASimulator {
         reg[i.rd] = reg[i.rs1] + i.imm;
     }
 
-    private void processR(R i){
+    private void processR(R i) throws ExecutionControl.NotImplementedException {
         // ADD
         if(i.funct3 == 0x00 && i.funct7 == 0x00){
             reg[i.rd] = reg[i.rs1] + reg[i.rs2];
+            return;
         }
+        // SUB
+        if(i.funct3 == 0x0 && i.funct7 == 0x20){
+            reg[i.rd] = reg[i.rs1] - reg[i.rs2];
+            return;
+        }
+        // SLL
+        if(i.funct3 == 0x1 && i.funct7 == 0x00){
+            reg[i.rd] = reg[i.rs1] << reg[i.rs2];
+            return;
+        }
+        // XOR
+        if(i.funct3 == 0x4 && i.funct7 == 0x0){
+            reg[i.rd] = reg[i.rs1] ^ reg[i.rs2];
+            return;
+        }
+        // SRL
+        if(i.funct3 == 0x5 && i.funct7 == 0x00){
+            reg[i.rd] = reg[i.rs1] >> reg[i.rs2];
+            return;
+        }
+        // SRA
+        if(i.funct3 == 0x5 && i.funct7 == 0x20){
+            reg[i.rd] = reg[i.rs1] >> reg[i.rs2];
+            return;
+        }
+        //  OR
+        if(i.funct3 == 0x6 && i.funct7 == 0x00){
+            reg[i.rd] = reg[i.rs1] | reg[i.rs2];
+            return;
+        }
+        // AND
+        if(i.funct3 == 0x7 && i.funct7 == 0x00){
+            reg[i.rd] = reg[i.rs1] & reg[i.rs2];
+            return;
+        }
+
+        throw new ExecutionControl.NotImplementedException("R-type instruction not implemented");
     }
 }
