@@ -5,5 +5,9 @@ package Instruction.abstact;
  */
 public abstract class Instruction {
     public int opcode;
+
+    public Instruction(int instr) {
+        this.opcode = instr & 0x7f;;
+    }
 }
 
