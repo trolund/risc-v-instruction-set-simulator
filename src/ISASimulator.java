@@ -24,6 +24,10 @@ public class ISASimulator {
 
     public void runProgram(int[] progr) {
         System.out.println(c.colorText("🛠 RISC-V Simulator started. 🚀", TUIColors.PURPLE_BACKGROUND));
+        if(progr.length <= 0) {
+            exit(0);
+            return;
+        }
 
         pc = 0;
 
@@ -48,7 +52,11 @@ public class ISASimulator {
             printRegState();
         }
 
-        System.out.println(c.colorText("Program exit ✅", TUIColors.CYAN));
+        exit(0);
+    }
+
+    private void exit(int exitCode){
+        System.out.println(c.colorText("Program exit with code: " + exitCode, TUIColors.CYAN));
     }
 
     private void printRegState(){

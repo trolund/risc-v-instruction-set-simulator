@@ -8,11 +8,15 @@ public class ProgramLoader {
         BINARY
     }
 
-    public void loadTest(String programName) {
-        loadTest(programName, ProgramType.ASSEMBLY);
+    public int[] loadTest(String programName) {
+        return loadTest(programName, ProgramType.ASSEMBLY, true);
     }
 
     public int[] loadTest(String programName, ProgramType programType) {
+        return loadTest(programName, programType, true);
+    }
+
+    public int[] loadTest(String programName, ProgramType programType, boolean test) {
         InputStream inputStream = null;
         try {
             ClassLoader classLoader = getClass().getClassLoader();
@@ -73,7 +77,7 @@ public class ProgramLoader {
 
     private int processLine(String line) {
         if(line.isBlank() || line.isEmpty() || line.charAt(0) == '/' || line.charAt(0) == '#') return -1; // discard line
-        String[] parts = line.split("//");
+        String[] parts = line.split("//|#");
         return Integer.decode(parts[0].trim());
     }
 }
