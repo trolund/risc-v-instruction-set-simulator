@@ -5,5 +5,6 @@ public abstract class RD extends Instruction {
 
     public RD(int instr) {
         super(instr);
+        rd = (instr >> 7) & 0x1F;
     }
 }

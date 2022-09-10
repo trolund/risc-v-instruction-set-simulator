@@ -118,4 +118,46 @@ public class Aritmetic {
 
     }
 
+    @Test
+    public void lui(){
+
+        ISASimulator vm = new ISASimulator();
+
+        // test case
+        vm.runProgram(loader.loadTest("lui"));
+
+        int[] reg = vm.getReg();
+
+        assertEquals(40960, reg[5]);
+
+    }
+
+    @Test
+    public void auipc(){
+
+        ISASimulator vm = new ISASimulator();
+
+        // test case
+        vm.runProgram(loader.loadTest("auipc"));
+
+        int[] reg = vm.getReg();
+
+        assertEquals(40968, reg[13]); // pc moved 8 bit
+
+    }
+
+    @Test
+    public void auipc2(){
+
+        ISASimulator vm = new ISASimulator();
+
+        // test case
+        vm.runProgram(loader.loadTest("auipc2"));
+
+        int[] reg = vm.getReg();
+
+        assertEquals(40960, reg[13]);
+
+    }
+
 }

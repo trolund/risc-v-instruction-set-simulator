@@ -2,6 +2,7 @@ import Instruction.abstact.Instruction;
 import Instruction.R;
 import Instruction.I;
 import Instruction.S;
+import Instruction.U;
 
 public class InstructionDecoder {
 
@@ -56,11 +57,7 @@ public class InstructionDecoder {
             case 0x37:
             case 0x17:
                 if (debug) System.out.println("Type: U-type");
-
-                rd = (instr >> 7) & 0x1F;
-                imm = instr & 0x7FFFF000;
-                throw new Exception("Type is not implemented");
-                //Format: UJ-type
+                return new U(instr);
             case 0x6F:  //UJ type
                 if (debug) System.out.println("Type: UJ-type");
 

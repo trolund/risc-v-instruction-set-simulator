@@ -1,5 +1,7 @@
 import Instruction.R;
 import Instruction.I;
+import Instruction.U;
+import Instruction.abstact.Instruction;
 import jdk.jshell.spi.ExecutionControl;
 
 public class ISASimulator {
@@ -25,7 +27,7 @@ public class ISASimulator {
     public void runProgram(int[] progr) {
         System.out.println(c.colorText("🛠 RISC-V Simulator started. 🚀", TUIColors.PURPLE_BACKGROUND));
         if(progr.length <= 0) {
-            System.out.println(c.colorText("Empty program", TUIColors.YELLOW_BACKGROUND));
+            System.out.println(c.colorText("Empty program (∅ == 🪹)", TUIColors.YELLOW_BACKGROUND));
             exit(0);
             return;
         }
@@ -79,14 +81,31 @@ public class ISASimulator {
                 break;
             // type I
             case 0x13:
-                processI(decoder.process(instr));
-                break;
             case 0x3:
                 processI(decoder.process(instr));
+                break;
+            case 0x37:
+            case 0x17:
+                processU(decoder.process(instr));
                 break;
             default:
                 System.out.println(c.colorText("Opcode " + opcode + " not yet implemented 🛠😤", TUIColors.RED));
         }
+    }
+
+    private void processU(U i) throws ExecutionControl.NotImplementedException {
+        // LUI
+        if(i.opcode == 0x37) {
+            reg[i.rd] = i.imm;
+            return;
+        }
+        // auipc
+        if(i.opcode == 0x17) {
+            reg[i.rd] = pc + i.imm;
+            return;
+        }
+
+        throw new ExecutionControl.NotImplementedException(c.colorText("U-type instruction not implemented 🛠😤", TUIColors.RED));
     }
 
     private void processI(I i) throws ExecutionControl.NotImplementedException {
@@ -190,6 +209,7 @@ public class ISASimulator {
                 // move pc
                 pc = reg[i.rs1] + i.imm;
             }
+            return;
         }
 
         throw new ExecutionControl.NotImplementedException(c.colorText("I-type instruction not implemented 🛠😤", TUIColors.RED));
