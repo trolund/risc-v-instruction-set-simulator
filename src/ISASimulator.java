@@ -25,6 +25,7 @@ public class ISASimulator {
     public void runProgram(int[] progr) {
         System.out.println(c.colorText("🛠 RISC-V Simulator started. 🚀", TUIColors.PURPLE_BACKGROUND));
         if(progr.length <= 0) {
+            System.out.println(c.colorText("Empty program", TUIColors.YELLOW_BACKGROUND));
             exit(0);
             return;
         }
@@ -234,6 +235,11 @@ public class ISASimulator {
         // AND
         if(i.funct3 == 0x7 && i.funct7 == 0x00){
             reg[i.rd] = reg[i.rs1] & reg[i.rs2];
+            return;
+        }
+        // slt
+        if(i.funct3 == 0x2 && i.funct7 == 0x00){
+            reg[i.rd] = (reg[i.rs1] < reg[i.rs2]) ? 1 : 0;
             return;
         }
 

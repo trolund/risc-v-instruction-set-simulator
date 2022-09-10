@@ -9,7 +9,7 @@ public class ProgramLoader {
     }
 
     public int[] loadTest(String programName) {
-        return loadTest(programName, ProgramType.ASSEMBLY, true);
+        return loadTest(programName, ProgramType.BINARY, true);
     }
 
     public int[] loadTest(String programName, ProgramType programType) {
