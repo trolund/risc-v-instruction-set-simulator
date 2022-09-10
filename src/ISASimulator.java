@@ -242,6 +242,11 @@ public class ISASimulator {
             reg[i.rd] = (reg[i.rs1] < reg[i.rs2]) ? 1 : 0;
             return;
         }
+        // sltu
+        if(i.funct3 == 0x3 && i.funct7 == 0x00){
+            reg[i.rd] = (reg[i.rs1] < reg[i.rs2]) ? 1 : 0;
+            return;
+        }
 
         throw new ExecutionControl.NotImplementedException(c.colorText("R-type instruction not implemented 🛠😤", TUIColors.RED));
     }
