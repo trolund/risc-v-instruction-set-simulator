@@ -6,11 +6,20 @@ import jdk.jshell.spi.ExecutionControl;
 
 public class ISASimulator {
 
-    private static int pc;
-    private static int reg[] = new int[32];
-    private static int memory[] = new int[10000];
-    private static InstructionDecoder decoder = new InstructionDecoder();
-    private  static TUIColors c = new TUIColors();
+    private int pc;
+    private int reg[];
+    private int memory[];
+    private InstructionDecoder decoder;
+    private TUIColors c;
+
+    public ISASimulator() {
+        this.pc = 0;
+        this.memory = new int[10000];
+        this.reg = new int[32];
+
+        this.decoder =  new InstructionDecoder();
+        this.c = new TUIColors();
+    }
 
     public int getPc() {
         return pc;
@@ -112,7 +121,7 @@ public class ISASimulator {
         if(i.opcode == 0x3) {
             //  LB
             if (i.funct3 == 0x0) {
-                if ((memory[ISASimulator.reg[i.rs1] + i.imm]) >> 7 == 1)
+                if ((memory[reg[i.rs1] + i.imm]) >> 7 == 1)
                     reg[i.rd] = (memory[reg[i.rs1] + i.imm]) | 0xFFFFFF00;
                 else
                     reg[i.rd] = (memory[reg[i.rs1] + i.imm]);

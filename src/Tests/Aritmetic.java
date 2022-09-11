@@ -142,7 +142,7 @@ public class Aritmetic {
 
         int[] reg = vm.getReg();
 
-        assertEquals(40968, reg[13]); // pc moved 8 bit
+        assertEquals(40968, reg[13]); // pc moved 8 bytes (two instructions)
 
     }
 
