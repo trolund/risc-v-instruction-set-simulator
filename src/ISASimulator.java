@@ -1,7 +1,6 @@
 import Instruction.R;
 import Instruction.I;
 import Instruction.U;
-import Instruction.abstact.Instruction;
 import jdk.jshell.spi.ExecutionControl;
 
 public class ISASimulator {

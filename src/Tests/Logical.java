@@ -33,4 +33,74 @@ public class Logical {
         assertEquals(1, reg[3]);
 
     }
+
+    @Test
+    public void or(){
+
+        ISASimulator vm = new ISASimulator();
+
+        // test case
+        vm.runProgram(loader.loadTest("or"));
+
+        int[] reg = vm.getReg();
+
+        assertEquals(0, reg[3]);
+
+    }
+
+    @Test
+    public void or2(){
+
+        ISASimulator vm = new ISASimulator();
+
+        // test case
+        vm.runProgram(loader.loadTest("or2"));
+
+        int[] reg = vm.getReg();
+
+        assertEquals(1, reg[3]);
+
+    }
+
+    @Test
+    public void xor(){
+
+        ISASimulator vm = new ISASimulator();
+
+        // test case
+        vm.runProgram(loader.loadTest("xor"));
+
+        int[] reg = vm.getReg();
+
+        assertEquals(0, reg[3]);
+
+    }
+
+    @Test
+    public void xor2(){
+
+        ISASimulator vm = new ISASimulator();
+
+        // test case
+        vm.runProgram(loader.loadTest("xor2"));
+
+        int[] reg = vm.getReg();
+
+        assertEquals(1, reg[3]);
+
+    }
+
+    @Test
+    public void xor3(){
+
+        ISASimulator vm = new ISASimulator();
+
+        // test case
+        vm.runProgram(loader.loadTest("xor3"));
+
+        int[] reg = vm.getReg();
+
+        assertEquals(0, reg[3]);
+
+    }
 }
