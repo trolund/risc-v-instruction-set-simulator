@@ -103,4 +103,74 @@ public class Logical {
         assertEquals(0, reg[3]);
 
     }
+
+    @Test
+    public void andi(){
+
+        ISASimulator vm = new ISASimulator();
+
+        // test case
+        vm.runProgram(loader.loadTest("andi"));
+
+        int[] reg = vm.getReg();
+
+        assertEquals(0, reg[3]);
+
+    }
+
+    @Test
+    public void andi2(){
+
+        ISASimulator vm = new ISASimulator();
+
+        // test case
+        vm.runProgram(loader.loadTest("andi2"));
+
+        int[] reg = vm.getReg();
+
+        assertEquals(1, reg[3]);
+
+    }
+
+    @Test
+    public void ori(){
+
+        ISASimulator vm = new ISASimulator();
+
+        // test case
+        vm.runProgram(loader.loadTest("ori"));
+
+        int[] reg = vm.getReg();
+
+        assertEquals(0, reg[3]);
+
+    }
+
+    @Test
+    public void ori2(){
+
+        ISASimulator vm = new ISASimulator();
+
+        // test case
+        vm.runProgram(loader.loadTest("ori2"));
+
+        int[] reg = vm.getReg();
+
+        assertEquals(1, reg[3]);
+
+    }
+
+    @Test
+    public void xori(){
+
+        ISASimulator vm = new ISASimulator();
+
+        // test case
+        vm.runProgram(loader.loadTest("xori"));
+
+        int[] reg = vm.getReg();
+
+        assertEquals(1, reg[3]);
+
+    }
 }

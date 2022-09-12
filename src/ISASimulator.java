@@ -1,6 +1,7 @@
 import Instruction.R;
 import Instruction.I;
 import Instruction.U;
+import Instruction.abstact.Instruction;
 import jdk.jshell.spi.ExecutionControl;
 
 public class ISASimulator {
@@ -8,6 +9,10 @@ public class ISASimulator {
     private int pc;
     private int reg[];
     private int memory[];
+
+    private int currInstr;
+
+    private Instruction currInstrObj;
     private InstructionDecoder decoder;
     private TUIColors c;
 
@@ -43,12 +48,13 @@ public class ISASimulator {
         pc = 0;
 
         for (; ; ) {
-            // get new instruction
-            int instr = progr[pc >> 2];
+            // fetch new instruction
+            currInstr = progr[pc >> 2];
 
             // process the instruction
             try{
-                ProcessInstr(instr);
+                decodeInstr(currInstr);
+                exeInstr(currInstrObj);
             }catch (Exception e){
                 System.err.println(e.getStackTrace());
             }
@@ -77,27 +83,30 @@ public class ISASimulator {
         System.out.println();
     }
 
-    private void ProcessInstr(int instr) throws ExecutionControl.NotImplementedException {
-        // extract opcode
-        int opcode = instr & 0x7f;
+    private void decodeInstr(int instr){
+        Instruction i = decoder.process(instr);
+        this.currInstr = instr;
+        this.currInstrObj = i;
+    }
 
+    private void exeInstr(Instruction i) throws ExecutionControl.NotImplementedException {
         // map the opcode to the right action's
-        switch (opcode) {
+        switch (i.opcode) {
             // type R
             case 0x33:
-                processR(decoder.process(instr));
+                processR((R) i);
                 break;
             // type I
             case 0x13:
             case 0x3:
-                processI(decoder.process(instr));
+                processI((I) i);
                 break;
             case 0x37:
             case 0x17:
-                processU(decoder.process(instr));
+                processU((U) i);
                 break;
             default:
-                System.out.println(c.colorText("Opcode " + opcode + " not yet implemented 🛠😤", TUIColors.RED));
+                System.out.println(c.colorText("Opcode " + i.opcode + " not yet implemented 🛠😤", TUIColors.RED));
         }
     }
 
