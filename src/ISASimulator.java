@@ -9,9 +9,7 @@ public class ISASimulator {
     private int pc;
     private int reg[];
     private int memory[];
-
     private int currInstr;
-
     private Instruction currInstrObj;
     private InstructionDecoder decoder;
     private TUIColors c;
