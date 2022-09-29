@@ -24,7 +24,7 @@ li t4 0x100000 # memory pointer start at 0x100000
 
     lw 		t0 0(t4)    # t0 = temp max 
     lw 		t1 0(t4)    # t1 = temp min 
-    li         t2, 99 	     # number of loop's (length in memory - 1)
+    li      t2, 99 	     # number of loop's (length in memory - 1)
     li 		t3, 0	     # counter variable
     
     loop_head:
