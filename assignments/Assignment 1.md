@@ -103,3 +103,14 @@ The code was tested using the code in .test_data and t2 is set to the length of 
 
 # Exercise A1.3
 
+(1.13)
+
+average instruction execution time is the same as average CPI.
+
+# Exercise A1.4
+
+page 104 og 10 sider frem
+
+
+C - leaf  
+B - non-leaf (be uses C)
