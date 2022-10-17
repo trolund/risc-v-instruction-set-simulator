@@ -1,0 +1,1 @@
+CPI (clock cycles per instruction) = Average number of clock cycles per instruction for a program or program fragment.
