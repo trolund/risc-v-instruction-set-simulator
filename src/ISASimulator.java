@@ -8,6 +8,8 @@ import java.util.Arrays;
 
 public class ISASimulator {
 
+    private boolean printReg = true;
+
     private int pc;
     private int reg[];
     private int memory[];
@@ -16,7 +18,16 @@ public class ISASimulator {
     private InstructionDecoder decoder;
     private TUIColors c;
 
+    public ISASimulator(boolean printReg) {
+        this.printReg = printReg;
+        resetSim();
+    }
+
     public ISASimulator() {
+        resetSim();
+    }
+
+    private void resetSim(){
         this.pc = 0;
         this.memory = new int[10000];
         this.reg = new int[32];
@@ -56,7 +67,7 @@ public class ISASimulator {
                 decodeInstr(currInstr);
                 exeInstr(currInstrObj);
             }catch (Exception e){
-                System.err.println(Arrays.toString(e.getStackTrace()));
+                // System.err.println(Arrays.toString(e.getStackTrace()));
             }
 
             pc += 4; // One instruction is four bytes (32 bit) -> move program counter to next instruction 🛠
@@ -77,10 +88,12 @@ public class ISASimulator {
     }
 
     private void printRegState(){
-        for (int x = 0; x < reg.length; ++x) {
-            System.out.print(reg[x] + " ");
+        if(this.printReg){
+            for (int i : reg) {
+                System.out.print(i + " ");
+            }
+            System.out.println();
         }
-        System.out.println();
     }
 
     private void decodeInstr(int instr){
