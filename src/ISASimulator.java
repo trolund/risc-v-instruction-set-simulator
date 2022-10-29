@@ -4,6 +4,8 @@ import Instruction.U;
 import Instruction.abstact.Instruction;
 import jdk.jshell.spi.ExecutionControl;
 
+import java.util.Arrays;
+
 public class ISASimulator {
 
     private int pc;
@@ -54,10 +56,10 @@ public class ISASimulator {
                 decodeInstr(currInstr);
                 exeInstr(currInstrObj);
             }catch (Exception e){
-                System.err.println(e.getStackTrace());
+                System.err.println(Arrays.toString(e.getStackTrace()));
             }
 
-            pc += 4; // One instruction is four bytes -> move program counter to next instruction 🛠
+            pc += 4; // One instruction is four bytes (32 bit) -> move program counter to next instruction 🛠
 
             // program have hit the end.
             if ((pc >> 2) >= progr.length) {

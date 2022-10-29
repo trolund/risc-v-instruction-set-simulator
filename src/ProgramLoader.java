@@ -1,15 +1,18 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Objects;
 
 public class ProgramLoader {
 
     enum ProgramType {
         ASSEMBLY,
-        BINARY
+        BINARY,
+        TEXT
     }
 
     public int[] loadTest(String programName) {
-        return loadTest(programName, ProgramType.BINARY, true);
+        return loadTest(programName, ProgramType.TEXT, true);
     }
 
     public int[] loadTest(String programName, ProgramType programType) {
@@ -20,7 +23,7 @@ public class ProgramLoader {
         InputStream inputStream = null;
         try {
             ClassLoader classLoader = getClass().getClassLoader();
-            File file = new File(classLoader.getResource("TestPrograms/" + programType + "/" + programName + ".txt").getFile());
+            File file = new File(Objects.requireNonNull(classLoader.getResource("TestPrograms/" + programType + "/" + programName + ".txt")).getFile());
             inputStream = new FileInputStream(file);
             return transformInputStream(inputStream);
         }catch (Exception e) {
@@ -61,6 +64,62 @@ public class ProgramLoader {
         }
 
         return new int[0];
+    }
+
+    public File[] getAllFilesWithEx(String path, String ex) {
+        try {
+            ClassLoader classLoader = getClass().getClassLoader();
+            File file = new File(Objects.requireNonNull(classLoader.getResource(path)).getFile());
+
+            FilenameFilter filter = new FilenameFilter() {
+                @Override
+                public boolean accept(File f, String name) {
+                    return name.endsWith("." + ex);
+                }
+            };
+
+                return file.listFiles(filter);
+             }catch (Exception e) {
+            System.out.println(e);
+            }
+        return null;
+    }
+
+    private String getFileName(String filename){
+        String[] parts = filename.split("\\.");
+        return parts[0];
+    }
+
+    public File findFileWithName(String filename, File[] files){
+
+        String name = getFileName(filename);
+
+        for(File f: files){
+            if(getFileName(f.getName()).equals(name)) {
+                return f;
+            }
+        }
+
+        return null;
+    }
+
+    public int[] readBinFile(File file) throws IOException {
+        ArrayList<Integer> program = new ArrayList<>();
+        DataInputStream binFile = new DataInputStream(file.toURL().openStream());
+        while(binFile.available() > 0) {
+            try
+            {
+                int instr = binFile.readInt();
+                instr = Integer.reverseBytes(instr);
+                program.add(instr);
+            }
+            catch(EOFException e) {
+                e.printStackTrace();
+            }
+        }
+        binFile.close();
+
+        return program.stream().mapToInt(i -> (int) i).toArray();
     }
 
     private int[] transformInputStream(InputStream inputStream) throws IOException {
