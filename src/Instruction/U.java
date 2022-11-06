@@ -7,7 +7,8 @@ public class U extends RD {
 
     public U(int instr) {
         super(instr);
-        imm = instr & 0x7FFFF000;
+        rd = (instr >> 7) & 0x1F;
+        imm = instr & 0x7FFFF000 | (instr & 0x80000000);
     }
 }
 

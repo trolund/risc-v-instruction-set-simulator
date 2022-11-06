@@ -109,15 +109,19 @@ public class ISASimulator {
         switch (i.opcode) {
             // type R
             case 0x33:
+                if(debug) System.out.println("type-R");
                 processR((R) i);
                 break;
             // type I
-            case 0x13:
             case 0x3:
+            case 0x13:
+            case 0x67:
+                if(debug) System.out.println("type-I");
                 processI((I) i);
                 break;
             case 0x37:
             case 0x17:
+                if(debug) System.out.println("type-U");
                 processU((U) i);
                 break;
             default:

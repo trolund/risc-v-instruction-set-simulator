@@ -13,7 +13,7 @@ public class I extends RD {
         rd = (instr >> 7) & 0x1F;
         funct3 = (instr >> 12) & 0x7 ;
         rs1 = (instr >> 15) & 0x1F;
-        imm = (instr >> 20) & 0xFFF;
+        imm = (instr >> 20) & 0xFFF | (instr & 0x80000000) >> 20;
         funct6 = (instr >> 26) & 0x3F;
     }
 }
