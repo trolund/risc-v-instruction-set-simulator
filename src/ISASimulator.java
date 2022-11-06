@@ -296,7 +296,7 @@ public class ISASimulator {
             reg[i.rd] = reg[i.rs1] ^ reg[i.rs2];
             return;
         }
-        // SRL
+        // srl
         if(i.funct3 == 0x5 && i.funct7 == 0x00){
             if(debug) System.out.println("srl");
             reg[i.rd] = reg[i.rs1] >> reg[i.rs2];
