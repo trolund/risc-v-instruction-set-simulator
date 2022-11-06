@@ -4,8 +4,10 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CourseTests {
 
@@ -17,7 +19,7 @@ public class CourseTests {
 
         for (int i = 0; i < binaryFiles.length; i++) {
 
-            ISASimulator vm = new ISASimulator();
+            ISASimulator vm = new ISASimulator(true);
 
             File bin = binaryFiles[i];
             File res = loader.findFileWithName(bin.getName(), resFiles);
@@ -30,7 +32,18 @@ public class CourseTests {
 
             int[] reg = vm.getReg();
 
-            // assertEquals(5, reg[3]);
+            int[] expectedReg = loader.readBinFile(res);
+
+            System.out.println("---- res -----");
+            for (int r: expectedReg) {
+                System.out.print(r + " ");
+            }
+            System.out.println();
+
+            boolean testResult = Arrays.equals(expectedReg, reg);
+
+            assertEquals(expectedReg, reg);
+            assertTrue(testResult);
         }
     }
 
