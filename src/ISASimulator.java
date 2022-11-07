@@ -2,6 +2,7 @@ import Instruction.R;
 import Instruction.I;
 import Instruction.U;
 import Instruction.SB;
+import Instruction.S;
 import Instruction.abstact.Instruction;
 import jdk.jshell.spi.ExecutionControl;
 
@@ -134,9 +135,39 @@ public class ISASimulator {
                 if (debug) System.out.println("type-SB");
                 processSB((SB) i);
             }
+            case 0x23 -> {
+                if (debug) System.out.println("type-S");
+                processS((S) i);
+            }
             default ->
                     System.out.println(c.colorText("Opcode " + i.opcode + " not yet implemented 🛠😤", TUIColors.RED));
         }
+    }
+
+    private void processS(S i) {
+        //  sb instruction
+        if((i.funct3 == 0x0)){
+            if (debug) System.out.println("sb");
+            // Store 8-bit, values from the low bits of register rs2 to memory.
+            // imm = offset
+            memory[reg[i.rs1] + i.imm] = reg[i.rs2] & 0xFF;
+            return;
+        }
+        //  sh instruction
+        if((i.funct3 == 0x1)){
+            if (debug) System.out.println("sh");
+            // Store 16-bit, values from the low bits of register rs2 to memory
+            memory[reg[i.rs1] + i.imm] = reg[i.rs2] & 0xFFFF;
+            return;
+        }
+        //  sw instruction
+        if((i.funct3 == 0x2)){
+            if (debug) System.out.println("sw");
+            // Store 32-bit, values from the low bits of register rs2 to memory.
+            memory[reg[i.rs1] + i.imm] = reg[i.rs2];
+            return;
+        }
+
     }
 
     private void processU(U i) throws ExecutionControl.NotImplementedException {
@@ -168,9 +199,9 @@ public class ISASimulator {
                 System.out.println(reg[11]); // TODO print string?
             } else if (a0 == 9) { // allocates a1 bytes on the heap, returns pointer to start in a0
 
-            } else if (a0 == 10) { //ends the program
+            } else if (a0 == 10) {
                 exit(0);
-            } else if (a0 == 11) {//prints ASCII character in a1
+            } else if (a0 == 11) {
                 System.out.println((char) reg[11]);
             } else if (a0 == 17) {
                 exit(reg[11]);
