@@ -17,9 +17,12 @@ public class CourseTests {
         File[] binaryFiles  = loader.getAllFilesWithEx("TestPrograms/BINARY/task" + taskID + "/","bin");
         File[] resFiles  = loader.getAllFilesWithEx("TestPrograms/BINARY/task" + taskID + "/","res");
 
+        int c = 0;
+        int e = 0;
+
         for (int i = 0; i < binaryFiles.length; i++) {
 
-            ISASimulator vm = new ISASimulator(true, false);
+            ISASimulator vm = new ISASimulator(true, true);
 
             File bin = binaryFiles[i];
             File res = loader.findFileWithName(bin.getName(), resFiles);
@@ -42,9 +45,19 @@ public class CourseTests {
 
             boolean testResult = Arrays.equals(expectedReg, reg);
 
-            // assertEquals(expectedReg, reg);
+            if(testResult) {
+                System.out.println("Correct ✅");
+                c++;
+            }else {
+                System.out.println("Error ‼️");
+                e++;
+            }
+
             assertTrue(testResult);
         }
+
+        System.out.println("------ END RESULT ------");
+        System.out.println("✅: " + c + " ‼️: " + e);
     }
 
     @Test

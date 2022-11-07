@@ -1,6 +1,7 @@
 import Instruction.R;
 import Instruction.I;
 import Instruction.U;
+import Instruction.SB;
 import Instruction.abstact.Instruction;
 import jdk.jshell.spi.ExecutionControl;
 
@@ -11,8 +12,8 @@ public class ISASimulator {
     private boolean printReg = true;
     private boolean debug = true;
     private int pc;
-    private int reg[];
-    private int memory[];
+    private int[] reg;
+    private int[] memory;
     private int currInstr;
     private Instruction currInstrObj;
     private InstructionDecoder decoder;
@@ -37,16 +38,8 @@ public class ISASimulator {
         this.c = new TUIColors();
     }
 
-    public int getPc() {
-        return pc;
-    }
-
     public int[] getReg() {
         return reg;
-    }
-
-    public int[] getMemory() {
-        return memory;
     }
 
     public void runProgram(int[] progr) {
@@ -68,7 +61,7 @@ public class ISASimulator {
                 decodeInstr(currInstr);
                 exeInstr(currInstrObj);
             }catch (Exception e){
-                // System.err.println(Arrays.toString(e.getStackTrace()));
+                System.err.println(Arrays.toString(e.getStackTrace()));
             }
 
             pc += 4; // One instruction is four bytes (32 bit) -> move program counter to next instruction 🛠
@@ -107,24 +100,27 @@ public class ISASimulator {
         // map the opcode to the right action's
         switch (i.opcode) {
             // type R
-            case 0x33:
-                if(debug) System.out.println("type-R");
+            case 0x33 -> {
+                if (debug) System.out.println("type-R");
                 processR((R) i);
-                break;
+            }
+
             // type I
-            case 0x3:
-            case 0x13:
-            case 0x67:
-                if(debug) System.out.println("type-I");
+            case 0x3, 0x13, 0x67 -> {
+                if (debug) System.out.println("type-I");
                 processI((I) i);
-                break;
-            case 0x37:
-            case 0x17:
-                if(debug) System.out.println("type-U");
+            }
+            case 0x37, 0x17 -> {
+                if (debug) System.out.println("type-U");
                 processU((U) i);
-                break;
-            default:
-                System.out.println(c.colorText("Opcode " + i.opcode + " not yet implemented 🛠😤", TUIColors.RED));
+            }
+            // type SB
+            case 0x63 -> {
+                if (debug) System.out.println("type-SB");
+                processSB((SB) i);
+            }
+            default ->
+                    System.out.println(c.colorText("Opcode " + i.opcode + " not yet implemented 🛠😤", TUIColors.RED));
         }
     }
 
@@ -267,6 +263,50 @@ public class ISASimulator {
         }
 
         throw new ExecutionControl.NotImplementedException(c.colorText("I-type instruction not implemented 🛠😤", TUIColors.RED));
+        }
+    }
+
+    private void processSB(SB i) throws ExecutionControl.NotImplementedException {
+        // beq instruction
+        if((i.funct3 == 0x0)){
+            if(reg[i.rs1] == reg[i.rs2]){
+                pc += i.imm - 4;
+            }
+            return;
+        }
+        // bne instruction
+        if((i.funct3 == 0x1)){
+            if(reg[i.rs1] != reg[i.rs2]){
+                pc += i.imm - 4; // -4 because the machine moves the pointer one forward
+            }
+            return;
+        }
+        // blt instruction
+        if((i.funct3 == 0x4)){
+            if(reg[i.rs1] < reg[i.rs2]){
+                pc += i.imm - 4;
+            }
+            return;
+        }
+        // bge instruction
+        if((i.funct3 == 0x5)){
+            if(reg[i.rs1] >= reg[i.rs2])
+            pc = pc + i.imm;
+            return;
+        }
+        //bltu instruction
+        if((i.funct3 == 0x6)){
+            if(reg[i.rs1] < reg[i.rs2]){
+                pc += i.imm - 4;
+            }
+            return;
+        }
+        //bgeu instruction
+        if((i.funct3 == 0x7)){
+            if(reg[i.rs1] >= reg[i.rs2]){
+                pc += i.imm - 4;
+            }
+            return;
         }
     }
 
