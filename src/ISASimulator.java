@@ -335,7 +335,7 @@ public class ISASimulator {
         if ((i.funct3 == 0x5)) {
             if (debug) System.out.println("bge");
             if (reg[i.rs1] >= reg[i.rs2]) {
-                pc = pc + i.imm;
+                pc = pc + i.imm - 4;
                 return;
             }
         }
@@ -350,7 +350,7 @@ public class ISASimulator {
         //bgeu instruction
         if ((i.funct3 == 0x7)) {
             if (debug) System.out.println("bgeu");
-            if (reg[i.rs1] >= reg[i.rs2]) {
+            if (unsignedValue(reg[i.rs1]) >= unsignedValue(reg[i.rs2])) {
                 pc += i.imm - 4;
             }
             return;
