@@ -4,10 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ecall {
 
-    private ProgramLoader loader = new ProgramLoader();
+    private final ProgramLoader loader = new ProgramLoader();
 
     @Test
-    public void ecall(){
+    public void ecallTest(){
 
         ISASimulator vm = new ISASimulator();
 

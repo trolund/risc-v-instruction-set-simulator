@@ -60,6 +60,8 @@ public class ISASimulator {
         pc = 0;
 
         while (true) {
+            if(forceEnd){ break; }
+
             // fetch new instruction
             currInstr = progr[pc >> 2];
 
@@ -69,13 +71,13 @@ public class ISASimulator {
                 exeInstr(currInstrObj);
                 instrCount++;
             } catch (Exception e) {
-                e.printStackTrace();
+                // e.printStackTrace();
             }
 
             pc += 4; // One instruction is four bytes (32 bit) -> move program counter to next instruction 🛠
 
             // program have hit the end.
-            if ((pc >> 2) >= progr.length || forceEnd) {
+            if ((pc >> 2) >= progr.length) {
                 break;
             }
 
@@ -155,8 +157,9 @@ public class ISASimulator {
     }
 
     private void processI(I i) throws ExecutionControl.NotImplementedException {
-        // ECALL https://github.com/kvakil/venus/wiki/Environmental-Calls
+        // ecall https://github.com/kvakil/venus/wiki/Environmental-Calls
         if (i.opcode == 0x73) {
+            if (debug) System.out.println("ecall");
             int a0 = reg[10];
 
             if (a0 == 1) {
@@ -172,8 +175,10 @@ public class ISASimulator {
             } else if (a0 == 17) {
                 exit(reg[11]);
             } else {
-                System.out.println("no a0 match the ID's");
+                System.out.println(c.colorText("Invalid ecall: " + a0, TUIColors.YELLOW_BACKGROUND));
+                exit(1);
             }
+            return;
         }
         if (i.opcode == 0x3) {
             if (debug) System.out.println("lb");
@@ -304,6 +309,7 @@ public class ISASimulator {
     private void processSB(SB i) throws ExecutionControl.NotImplementedException {
         // beq instruction
         if ((i.funct3 == 0x0)) {
+            if (debug) System.out.println("beq");
             if (reg[i.rs1] == reg[i.rs2]) {
                 pc += i.imm - 4;
             }
@@ -311,6 +317,7 @@ public class ISASimulator {
         }
         // bne instruction
         if ((i.funct3 == 0x1)) {
+            if (debug) System.out.println("bne");
             if (reg[i.rs1] != reg[i.rs2]) {
                 pc += i.imm - 4; // -4 because the machine moves the pointer one forward
             }
@@ -318,6 +325,7 @@ public class ISASimulator {
         }
         // blt instruction
         if ((i.funct3 == 0x4)) {
+            if (debug) System.out.println("blt");
             if (reg[i.rs1] < reg[i.rs2]) {
                 pc += i.imm - 4;
             }
@@ -325,12 +333,15 @@ public class ISASimulator {
         }
         // bge instruction
         if ((i.funct3 == 0x5)) {
-            if (reg[i.rs1] >= reg[i.rs2])
+            if (debug) System.out.println("bge");
+            if (reg[i.rs1] >= reg[i.rs2]) {
                 pc = pc + i.imm;
-            return;
+                return;
+            }
         }
         //bltu instruction
         if ((i.funct3 == 0x6)) {
+            if (debug) System.out.println("bltu");
             if (reg[i.rs1] < reg[i.rs2]) {
                 pc += i.imm - 4;
             }
@@ -338,6 +349,7 @@ public class ISASimulator {
         }
         //bgeu instruction
         if ((i.funct3 == 0x7)) {
+            if (debug) System.out.println("bgeu");
             if (reg[i.rs1] >= reg[i.rs2]) {
                 pc += i.imm - 4;
             }
