@@ -19,7 +19,7 @@ public class CourseTests {
 
         for (int i = 0; i < binaryFiles.length; i++) {
 
-            ISASimulator vm = new ISASimulator(true);
+            ISASimulator vm = new ISASimulator(true, false);
 
             File bin = binaryFiles[i];
             File res = loader.findFileWithName(bin.getName(), resFiles);

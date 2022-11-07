@@ -9,7 +9,7 @@ import java.util.Arrays;
 public class ISASimulator {
 
     private boolean printReg = true;
-
+    private boolean debug = true;
     private int pc;
     private int reg[];
     private int memory[];
@@ -18,10 +18,9 @@ public class ISASimulator {
     private InstructionDecoder decoder;
     private TUIColors c;
 
-    private boolean debug = true;
-
-    public ISASimulator(boolean printReg) {
+    public ISASimulator(boolean printReg, boolean debug) {
         this.printReg = printReg;
+        this.debug = debug;
         resetSim();
     }
 
