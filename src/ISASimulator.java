@@ -234,7 +234,7 @@ public class ISASimulator {
         //srli
         if(i.funct3 == 0x5 && i.funct6 == 0x00){
             if(debug) System.out.println("srli");
-            reg[i.rd] =  reg[i.rs1] >> i.imm;
+            reg[i.rd] = (int) (unsignedValue(reg[i.rs1]) >> unsignedValue(i.imm));
             return;
         }
         //srai
@@ -298,11 +298,11 @@ public class ISASimulator {
         }
         // srl
         if(i.funct3 == 0x5 && i.funct7 == 0x00){
-            if(debug) System.out.println("srl");
-            reg[i.rd] = reg[i.rs1] >> reg[i.rs2];
+            if(debug) System.out.println("srl: " + reg[i.rs1] + " >> " + reg[i.rs2]);
+            reg[i.rd] = (int) (unsignedValue(reg[i.rs1]) >> unsignedValue(reg[i.rs2]));
             return;
         }
-        // SRA
+        // sra
         if(i.funct3 == 0x5 && i.funct7 == 0x20){
             if(debug) System.out.println("sra");
             reg[i.rd] = reg[i.rs1] >> reg[i.rs2];
@@ -334,5 +334,9 @@ public class ISASimulator {
         }
 
         throw new ExecutionControl.NotImplementedException(c.colorText("R-type instruction not implemented 🛠😤", TUIColors.RED));
+    }
+
+    private long unsignedValue(int v){
+        return v & 0xffffffffL;
     }
 }

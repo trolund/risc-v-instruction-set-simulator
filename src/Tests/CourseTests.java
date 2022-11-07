@@ -42,7 +42,7 @@ public class CourseTests {
 
             boolean testResult = Arrays.equals(expectedReg, reg);
 
-            assertEquals(expectedReg, reg);
+            // assertEquals(expectedReg, reg);
             assertTrue(testResult);
         }
     }
