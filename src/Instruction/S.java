@@ -11,7 +11,7 @@ public class S extends Instruction {
     public S(int instr) {
         super(instr);
         imm =  (instr  >> 7) & 0x1F;
-        funct3 = (instr >> 12) & 0x7 ;
+        funct3 = (instr >> 12) & 0x7;
         rs1 = (instr >> 15) & 0x1F;
         rs2 = (instr >> 20) & 0x1F;
         imm |= (instr >> 20) & 0x7E0;

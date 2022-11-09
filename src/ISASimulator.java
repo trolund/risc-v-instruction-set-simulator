@@ -37,7 +37,7 @@ public class ISASimulator {
 
     private void resetSim() {
         this.pc = 0;
-        this.memory = new int[10000];
+        this.memory = new int[4000000]; // 4 mb
         this.reg = new int[32];
 
         this.decoder = new InstructionDecoder();
@@ -98,6 +98,8 @@ public class ISASimulator {
     }
 
     private void printRegState() {
+
+
         if (this.printReg) {
             for (int i : reg) {
                 System.out.print(i + " ");
@@ -212,9 +214,10 @@ public class ISASimulator {
             return;
         }
         if (i.opcode == 0x3) {
-            if (debug) System.out.println("lb");
+
             //  LB
             if (i.funct3 == 0x0) {
+                if (debug) System.out.println("lb");
                 if ((memory[reg[i.rs1] + i.imm]) >> 7 == 1)
                     reg[i.rd] = (memory[reg[i.rs1] + i.imm]) | 0xFFFFFF00;
                 else
@@ -224,10 +227,11 @@ public class ISASimulator {
             //  LH
             if (i.funct3 == 0x1) {
                 if (debug) System.out.println("lh");
-                if ((memory[reg[i.rs1] + i.imm + 1]) >> 7 == 1)
-                    reg[i.rd] = (memory[reg[i.rs1] + i.imm]) | ((memory[reg[i.rs1] + i.imm + 1]) << 8) | 0xFFFF0000;
+                System.out.println((memory[reg[i.rs1] + i.imm]) | ((memory[reg[i.rs1] + i.imm + 1]) << 8));
+                if ((memory[reg[i.rs1] + i.imm]) >> 7 == 1)
+                    reg[i.rd] = (memory[reg[i.rs1] + i.imm]) | ((memory[reg[i.rs1] + i.imm + 1]) << 8) | 0xFF;
                 else
-                    reg[i.rd] = (memory[reg[i.rs1] + i.imm]) | ((memory[reg[i.rs1] + i.imm + 1]) << 8);
+                    reg[i.rd] = (int) two(memory[reg[i.rs1] + i.imm] | ((memory[reg[i.rs1] + i.imm + 1]) << 8));
                 return;
             }
             //  LW
@@ -451,6 +455,11 @@ public class ISASimulator {
         }
 
         throw new ExecutionControl.NotImplementedException(c.colorText("R-type instruction not implemented 🛠😤", TUIColors.RED));
+    }
+
+    private long two(int v) {
+        int val = (~v) + 1;
+        return -(val & 0xFFFF);
     }
 
     private long unsignedValue(int v) {
