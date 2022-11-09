@@ -3,6 +3,7 @@ import Instruction.I;
 import Instruction.U;
 import Instruction.SB;
 import Instruction.S;
+import Instruction.UJ;
 import Instruction.abstact.Instruction;
 import jdk.jshell.spi.ExecutionControl;
 
@@ -72,7 +73,7 @@ public class ISASimulator {
                 exeInstr(currInstrObj);
                 instrCount++;
             } catch (Exception e) {
-                // e.printStackTrace();
+                e.printStackTrace();
             }
 
             pc += 4; // One instruction is four bytes (32 bit) -> move program counter to next instruction 🛠
@@ -141,9 +142,20 @@ public class ISASimulator {
                 if (debug) System.out.println("type-S");
                 processS((S) i);
             }
-            default ->
-                    System.out.println(c.colorText("Opcode " + i.opcode + " not yet implemented 🛠😤", TUIColors.RED));
+            case 0x6F -> {  //UJ type
+                if (debug) System.out.println("type-UB");
+                processUJ((UJ) i);
+            }
+            default -> System.out.println(c.colorText("Opcode " + i.opcode + " not yet implemented 🛠😤", TUIColors.RED));
         }
+    }
+
+    private void processUJ(UJ i) {
+        // jal instruction
+        if (debug) System.out.println("jal");
+        if(i.rd != 0)
+            reg[i.rd] = pc + 4;
+        pc += i.imm;
     }
 
     private void processS(S i) {
@@ -210,6 +222,17 @@ public class ISASimulator {
             } else {
                 System.out.println(c.colorText("Invalid ecall: " + a0, TUIColors.YELLOW_BACKGROUND));
                 exit(1);
+            }
+            return;
+        }
+        if (i.opcode == 0x67) {
+            // Jalr instruction
+            if (debug) System.out.println("jalr");
+            if (i.funct3 == 0x0) {
+                if (i.rd != 0)
+                    reg[i.rd] = pc + 4;
+                // move pc
+                pc = reg[i.rs1] + i.imm;
             }
             return;
         }
@@ -324,18 +347,6 @@ public class ISASimulator {
                 reg[i.rd] = reg[i.rs1] & i.imm;
                 return;
             }
-            if (i.opcode == 0x67) {
-                if (debug) System.out.println("jalr");
-                // Jalr instruction
-                if (i.funct3 == 0x0) {
-                    if (i.rd != 0)
-                        reg[i.rd] = pc + 4;
-                    // move pc
-                    pc = reg[i.rs1] + i.imm;
-                }
-                return;
-            }
-
 
             throw new ExecutionControl.NotImplementedException(c.colorText("I-type instruction not implemented 🛠😤", TUIColors.RED));
         }

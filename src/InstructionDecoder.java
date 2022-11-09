@@ -4,6 +4,7 @@ import Instruction.I;
 import Instruction.S;
 import Instruction.U;
 import Instruction.SB;
+import Instruction.UJ;
 
 public class InstructionDecoder {
 
@@ -47,9 +48,11 @@ public class InstructionDecoder {
             }
             case 0x6F -> {  //UJ type
                 if (debug) System.out.println("Type: UJ-type");
-                throw new Exception("Type is not implemented");
+                return new UJ(instr);
             }
-            default -> throw new Exception("Type is not implemented");
+            default -> {
+                throw new Exception("Type is not implemented (opcode: " + opcode + ")");
+            }
         }
 
 

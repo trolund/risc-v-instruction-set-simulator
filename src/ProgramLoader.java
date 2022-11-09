@@ -1,5 +1,6 @@
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Objects;
 
@@ -66,19 +67,36 @@ public class ProgramLoader {
         return new int[0];
     }
 
+    public File getFilesWithExFirst(String path, String filename, String ex){
+        File[] files = getFilesWithEx(path, ex);
+
+        for (int i = 0; i < files.length; i++) {
+            File file = files[i];
+            if(file.getName().contains(filename) && file.getName().endsWith("." + ex)){
+                return file;
+            }
+        }
+
+        return null;
+    }
+
+    public File[] getFilesWithEx(String path, String ex) {
+        ClassLoader classLoader = getClass().getClassLoader();
+        File file = new File(Objects.requireNonNull(classLoader.getResource(path)).getFile());
+
+        FilenameFilter filter = new FilenameFilter() {
+            @Override
+            public boolean accept(File f, String name) {
+                return name.endsWith("." + ex);
+            }
+        };
+
+        return file.listFiles(filter);
+    }
+
     public File[] getAllFilesWithEx(String path, String ex) {
         try {
-            ClassLoader classLoader = getClass().getClassLoader();
-            File file = new File(Objects.requireNonNull(classLoader.getResource(path)).getFile());
-
-            FilenameFilter filter = new FilenameFilter() {
-                @Override
-                public boolean accept(File f, String name) {
-                    return name.endsWith("." + ex);
-                }
-            };
-
-                return file.listFiles(filter);
+                return getFilesWithEx(path, ex);
              }catch (Exception e) {
             System.out.println(e);
             }
