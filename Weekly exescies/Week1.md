@@ -32,7 +32,7 @@ Mega = 10^6
     For each performance indicator, calculate the average rate of improvement from 2010 to 2019 as well as the number of years required to double each at that corresponding rate.
 
 
-    
+
 
 
 |Desktop processor   |Year|Toch |Max. clock speed (GHz)|Integer IPC/ core|Cores|Max. DRAM Bandwidth (GB/s)|SP floating point (Gflop/s)|L3 cache (MIB)|
@@ -100,3 +100,87 @@ Assume that, on average, it consumed 10 W of static power and 90 W of dynamic po
 
 The Core i5 Ivy Bridge, released in 2012, has a clock rate of 3.4GHz and voltage of 0.9 V. Assume that, on average, it consumed 30 W of static power and 40 W of dynamic power.
 
+### 1.9.1 For each processor find the average capacitive loads.
+
+**Capacitive loads include energy stored in materials and devices, such as capacitors, and cause changes in voltage to lag behind changes in current.**
+
+formula to use:
+
+    C = 2 × DP / (V^2 × F)
+
+* Pentium_C = 2 * 90 / (1.25^2*(3.6*10^9)) = 0,000000032
+  
+* i5_C = 2 * 40 / (0.9^2*(3.4*10^9)) = 0,000000029048656
+
+### 1.9.2 Find the percentage of the total dissipated power comprised by static power and the ratio of static power to dynamic power for each technology.
+
+formula to use:
+
+    percentage of the total dissipated power = static power / (static power + dynamic power)
+
+* Pentium 4 = 10 W of static power / (10 W of static power + 90 W of dynamic power) = 0.1 = 10%
+
+* i5 = 30 W of static power / (30 W of static power + 40 W of dynamic power) = 0,4285714286 = 42.9%
+
+### 1.9.3 If the total dissipated power is to be reduced by 10%, how much should the voltage be reduced to maintain the same leakage current? 
+
+Note: power is defined as the product of voltage and current.
+
+    (S_new+D_new)/(S_old+D_old) = 0.90
+
+    D_new = C × V_new 2 × F
+    
+    S_old = V_old × I
+
+    S_new = V_new × I
+
+
+Therefore:
+
+Vnew = [Dnew/(C × F)]1/2
+Dnew = 0.90 × (Sold + Dold) − Snew
+Snew = Vnew × (Sold/Vold) 
+
+Pentium 4:
+Snew = Vnew × (10/1.25) = Vnew × 8
+Dnew = 0.90 × 100 − Vnew × 8 = 90 − Vnew × 8
+Vnew = [(90 − Vnew × 8)/(3.2E8 × 3.6E9)]1/2
+Vnew = 0.85 V
+
+Core i5:
+Snew = Vnew × (30/0.9) = Vnew × 33.3
+Dnew = 0.90 × 70 − Vnew × 33.3 = 63 − Vnew × 33.3 Vnew = [(63 − Vnew × 33.3)/(2.9E8 × 3.4E9)]1/2 Vnew = 0.64 V
+
+
+### 1.12 (1,3,4,6) The results of the SPEC CPU2006 bzip2 benchmark running on an AMD Barcelona has an instruction count of 2.389E12, an execution time of 750s, and a reference time of 9650s. 
+
+### 1.12.1 Find the CPI if the clock cycle time is 0.333 ns.
+
+    clock rate = 1/cycle time = 3 GHz
+
+    CPI = clock rate × CPU time/instr. count
+
+
+CPI(bzip2) = 3 × 10^9 × 750 / (2389 × 10^9) = 0.94
+
+### 1.12.3 Find the increase in CPU time if the number of instructions of the benchmark is increased by 10% without affecting the CPI.
+
+    CPU time = No. instr. × CPI/clock rate
+
+If CPI and clock rate do not change, the CPU time increase is equal to the increase in the number of instructions, that is 10%.
+
+### 1.12.4 Find the increase in CPU time if the number of instructions of the benchmark is increased by 10% and the CPI is increased by 5%.
+
+CPU time(before) = No. instr. × CPI/clock rate
+
+CPU time(after) = 1.1 × No. instr. × 1.05 × CPI/clock rate
+
+CPU time(after)/CPU time(before) = 1.1 × 1.05 = 1.155. 
+
+Thus, CPU time is increased by 15.5%.
+
+### 1.12.6
+
+CPI = (CPU time × clock rate) / No. instr.
+
+CPI = 700 × 4 × 10^9 / (0.85 × 2389 × 10^9) = 1.37
