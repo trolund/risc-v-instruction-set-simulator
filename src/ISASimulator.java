@@ -12,7 +12,6 @@ public class ISASimulator {
     private boolean printReg = true;
     private boolean debug = true;
     private int pc;
-    private int sp;
     private int[] reg;
     private int[] memory;
     private int currInstr;
@@ -39,55 +38,71 @@ public class ISASimulator {
 
     private void resetSim() {
         this.pc = 0;
-        this.sp = 0;
+
         this.memory = new int[4000000]; // 1 mb
         this.reg = new int[32];
-
+        this.reg[2] = 0;
         this.decoder = new InstructionDecoder();
         this.c = new TUIColors();
         this.instrCount = 0;
+    }
+
+    private void setSP(int x){
+        this.reg[2] = x;
+    }
+
+    private int getSP(){
+        return this.reg[2];
     }
 
     public int[] getReg() {
         return reg;
     }
 
-    public void runProgram(int[] progr) {
+    private void fetchInstruction(){
+        // fetch new instruction
+        currInstr = progr[pc >> 2];
+        // print instruction as hex if in debug mode
+        String hex = Integer.toHexString(pc);
+        if (debug) System.out.println("Hex instr (" + hex + "), PC: (" + (pc >> 2) + ") : " + Integer.toHexString(currInstr));
+
+    }
+
+    private void helloPrint(){
         System.out.println(c.colorText("🛠 RISC-V Simulator started. 🚀", TUIColors.PURPLE_BACKGROUND));
         if (progr.length <= 0) {
             System.out.println(c.colorText("Empty program (∅ == 🪹)", TUIColors.YELLOW_BACKGROUND));
             exitPrint();
-            return;
+            exit(0);
         }
+    }
+
+    public void runProgram(int[] progr) {
         this.progr = progr;
+        helloPrint();
 
         while (true) {
             if(forceEnd){ break; }
 
-            sp = pc;
-            pc += 4; // One instruction is four bytes (32 bit) -> move program counter to next instruction 🛠
-
-            // fetch new instruction
-            currInstr = progr[sp >> 2];
-
-            // print instruction as hex if in debug mode
-            if (debug) System.out.println("Hex instr: " + Integer.toHexString(currInstr));
-
-            // process the instruction
             try {
-                decodeInstr(currInstr);
-                exeInstr(currInstrObj);
+                fetchInstruction(); // 1. read the instructions from the memory
+                decodeInstr(currInstr); // 2. decode the instruction
+                exeInstr(currInstrObj); // 3. executes the instruction
                 instrCount++;
+                reg[0] = 0;
             } catch (Exception e) {
                 e.printStackTrace();
             }
+
+            pc += 4; // One instruction is four bytes (32 bit) -> move program counter to next instruction 🛠
+
+
+            printRegState();
 
             // program have hit the end.
             if ((pc >> 2) >= progr.length) {
                 break;
             }
-
-            printRegState();
         }
 
         exitPrint();
@@ -157,8 +172,8 @@ public class ISASimulator {
     private void processUJ(UJ i) {
         // jal instruction
         if (debug) System.out.println("jal");
-        reg[i.rd] = pc;
-        pc = sp + i.imm;
+        reg[i.rd] = pc + 4;
+        pc = pc + i.imm - 4;
     }
 
     private void processS(S i) {
@@ -188,7 +203,7 @@ public class ISASimulator {
     }
 
     private void processU(U i) throws ExecutionControl.NotImplementedException {
-        // LUI
+        // lui
         if (i.opcode == 0x37) {
             if (debug) System.out.println("lui");
             reg[i.rd] = i.imm;
@@ -197,7 +212,7 @@ public class ISASimulator {
         // auipc
         if (i.opcode == 0x17) {
             if (debug) System.out.println("auipc");
-            reg[i.rd] = sp + i.imm;
+            reg[i.rd] = pc + i.imm;
             return;
         }
 
@@ -234,12 +249,11 @@ public class ISASimulator {
             if (i.funct3 == 0x0) {
                 reg[i.rd] = pc;
                 // move pc
-                pc = reg[i.rs1] + i.imm & 0xFFFFFFFE;
+                pc = reg[i.rs1] + i.imm - 4 & 0xFFFFFFFE;
             }
             return;
         }
         if (i.opcode == 0x3) {
-
             //  lb
             if (i.funct3 == 0x0) {
                 if (debug) System.out.println("lb");
@@ -249,7 +263,7 @@ public class ISASimulator {
                     reg[i.rd] = (memory[reg[i.rs1] + i.imm]);
                 return;
             }
-            //  LH
+            //  lh
             if (i.funct3 == 0x1) {
                 if (debug) System.out.println("lh");
                 System.out.println((memory[reg[i.rs1] + i.imm]) | ((memory[reg[i.rs1] + i.imm + 1]) << 8));
@@ -359,7 +373,7 @@ public class ISASimulator {
         if ((i.funct3 == 0x0)) {
             if (debug) System.out.println("beq");
             if (reg[i.rs1] == reg[i.rs2]) {
-                pc = sp + i.imm;
+                pc = pc + i.imm - 4;
             }
             return;
         }
@@ -367,7 +381,7 @@ public class ISASimulator {
         if ((i.funct3 == 0x1)) {
             if (debug) System.out.println("bne");
             if (reg[i.rs1] != reg[i.rs2]) {
-                pc = sp + i.imm; // -4 because the machine moves the pointer one forward
+                pc = pc + i.imm - 4;
             }
             return;
         }
@@ -375,7 +389,7 @@ public class ISASimulator {
         if ((i.funct3 == 0x4)) {
             if (debug) System.out.println("blt");
             if (reg[i.rs1] < reg[i.rs2]) {
-                pc = sp + i.imm;
+                pc = pc + i.imm - 4;
             }
             return;
         }
@@ -383,7 +397,7 @@ public class ISASimulator {
         if ((i.funct3 == 0x5)) {
             if (debug) System.out.println("bge");
             if (reg[i.rs1] >= reg[i.rs2]) {
-                pc = sp + i.imm;
+                pc = pc + i.imm - 4;
                 return;
             }
         }
@@ -391,7 +405,7 @@ public class ISASimulator {
         if ((i.funct3 == 0x6)) {
             if (debug) System.out.println("bltu");
             if (reg[i.rs1] < reg[i.rs2]) {
-                pc += i.imm;
+                pc += i.imm - 4;
             }
             return;
         }
@@ -399,7 +413,7 @@ public class ISASimulator {
         if ((i.funct3 == 0x7)) {
             if (debug) System.out.println("bgeu");
             if (unsignedValue(reg[i.rs1]) >= unsignedValue(reg[i.rs2])) {
-                pc = sp + i.imm; // TODO should be pc += i.imm?
+                pc = pc + i.imm - 4;
             }
             return;
         }
