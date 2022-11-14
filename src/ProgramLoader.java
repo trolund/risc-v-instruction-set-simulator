@@ -72,7 +72,7 @@ public class ProgramLoader {
 
         for (int i = 0; i < files.length; i++) {
             File file = files[i];
-            if(file.getName().contains(filename) && file.getName().endsWith("." + ex)){
+            if(file.getName().equals(filename + "." + ex) && file.getName().endsWith("." + ex)){
                 return file;
             }
         }
