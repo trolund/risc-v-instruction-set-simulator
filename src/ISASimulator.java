@@ -195,7 +195,6 @@ public class ISASimulator {
             memory[reg[i.rs1] + i.imm + 1] = ((reg[i.rs2] >> 8) & 0xFF);
             memory[reg[i.rs1] + i.imm + 2] = ((reg[i.rs2] >> 16) & 0xFF);
             memory[reg[i.rs1] + i.imm + 3] = ((reg[i.rs2] >> 24) & 0xFF);
-            return;
         }
 
     }
@@ -245,7 +244,7 @@ public class ISASimulator {
             // Jalr instruction
             if (debug) System.out.println("jalr");
             if (i.funct3 == 0x0) {
-                reg[i.rd] = pc;
+                reg[i.rd] = pc + 4;
                 // move pc
                 pc = reg[i.rs1] + i.imm - 4 & 0xFFFFFFFE;
             }
