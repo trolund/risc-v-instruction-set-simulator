@@ -124,7 +124,7 @@ public class ISASimulator {
         this.currInstrObj = i;
     }
 
-    private void exeInstr(Instruction i) throws ExecutionControl.NotImplementedException {
+    private void exeInstr(Instruction i) throws Exception {
         // map the opcode to the right action's
         switch (i.opcode) {
             // type R
@@ -179,7 +179,8 @@ public class ISASimulator {
         if((i.funct3 == 0x1)){
             if (debug) System.out.println("sh");
             // Store 16-bit, values from the low bits of register rs2 to memory
-            memory[reg[i.rs1] + i.imm] = reg[i.rs2] & 0xFFFF;
+            memory[reg[i.rs1] + i.imm] = (reg[i.rs2] & 0xFF);
+            memory[reg[i.rs1] + i.imm + 1] = ((reg[i.rs2] >> 8) & 0xFF);
             return;
         }
         //  sw instruction
@@ -209,7 +210,7 @@ public class ISASimulator {
         throw new ExecutionControl.NotImplementedException(c.colorText("U-type instruction not implemented 🛠😤", TUIColors.RED));
     }
 
-    private void processI(I i) throws ExecutionControl.NotImplementedException {
+    private void processI(I i) throws Exception {
         // ecall https://github.com/kvakil/venus/wiki/Environmental-Calls
         if (i.opcode == 0x73) {
             if (debug) System.out.println("ecall");
@@ -248,7 +249,7 @@ public class ISASimulator {
             if (i.funct3 == 0x0) {
                 if (debug) System.out.println("lb");
                 if ((memory[reg[i.rs1] + i.imm]) >> 7 == 1) // should be sign extend (negative value)
-                    reg[i.rd] = (memory[reg[i.rs1] + i.imm]) | 0xFFFFFF00;
+                    reg[i.rd] = sext((memory[reg[i.rs1] + i.imm]), 8);
                 else
                     reg[i.rd] = (memory[reg[i.rs1] + i.imm]);
                 return;
@@ -256,12 +257,8 @@ public class ISASimulator {
             //  lh
             if (i.funct3 == 0x1) {
                 if (debug) System.out.println("lh");
-
                 int result = memory[reg[i.rs1] + i.imm] | ((memory[reg[i.rs1] + i.imm + 1]) << 8);
-
-                if ((result & 0x8000) > 0) {
-                    result |= 0xFFFF0000;
-                }
+                if ((result & 0x8000) > 0) result = sext(result, 16);
                 reg[i.rd] = result;
 
                 return;
@@ -473,6 +470,16 @@ public class ISASimulator {
         }
 
         throw new ExecutionControl.NotImplementedException(c.colorText("R-type instruction not implemented 🛠😤", TUIColors.RED));
+    }
+
+    private int sext(int v, int by) throws Exception {
+        switch (by) {
+            case 8 -> v |= 0xFFFFFF00;
+            case 16 -> v |= 0xFFFF0000;
+            case 24 -> v |= 0xFF000000;
+            default -> throw new Exception("can not sext : " + v + " by :" + by);
+        }
+        return v;
     }
 
     private long two(int v) {
