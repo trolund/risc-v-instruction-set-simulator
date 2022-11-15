@@ -4,9 +4,9 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class Task2Tests {
+public class Task2 {
 
-    private TestUtil test = new TestUtil();
+    private final TestUtil test = new TestUtil();
 
     @Test
     public void branchcnt() throws IOException {

@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class Task1Tests {
+public class Task1 {
 
     private TestUtil test = new TestUtil();
 

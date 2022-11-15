@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class TestUtil {
 
     private final ProgramLoader loader = new ProgramLoader();
+    private final TUIColors color = new TUIColors();
 
     boolean runTestWithName(int task, String name) throws IOException {
         File bin = loader.getFilesWithExFirst("TestPrograms/BINARY/task" + task + "/", name, "bin");
@@ -29,7 +30,7 @@ public class TestUtil {
 
         System.out.println("---- res -----");
         for (int r: expectedReg) {
-            System.out.print(r + " ");
+            System.out.print(color.colorText(r + " ", TUIColors.PURPLE_BACKGROUND));
         }
         System.out.println();
 

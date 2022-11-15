@@ -19,8 +19,7 @@ public class ISASimulator {
     private int[] progr;
     private Instruction currInstrObj;
     private InstructionDecoder decoder;
-    private TUIColors c;
-
+    private final TUIColors c;
     private int instrCount;
 
     private boolean forceEnd = false;
@@ -29,30 +28,22 @@ public class ISASimulator {
     public ISASimulator(boolean printReg, boolean debug) {
         this.printReg = printReg;
         this.debug = debug;
+        this.c = new TUIColors();
         resetSim();
     }
 
     public ISASimulator() {
+        this.c = new TUIColors();
         resetSim();
     }
 
     private void resetSim() {
         this.pc = 0;
-
         this.memory = new int[4000000]; // 1 mb
         this.reg = new int[32];
-        this.reg[2] = 0;
+        this.reg[2] = 0; // SP = 0 at init
         this.decoder = new InstructionDecoder();
-        this.c = new TUIColors();
         this.instrCount = 0;
-    }
-
-    private void setSP(int x){
-        this.reg[2] = x;
-    }
-
-    private int getSP(){
-        return this.reg[2];
     }
 
     public int[] getReg() {
@@ -64,12 +55,12 @@ public class ISASimulator {
         currInstr = progr[pc >> 2];
         // print instruction as hex if in debug mode
         String hex = Integer.toHexString(pc);
-        if (debug) System.out.println("Hex instr (" + hex + "), PC: (" + (pc >> 2) + ") : " + Integer.toHexString(currInstr));
+        if (debug) System.out.println(c.colorText("Hex instr (" + hex + "), PC: (" + (pc >> 2) + ") : " + Integer.toHexString(currInstr), TUIColors.YELLOW_UNDERLINED));
 
     }
 
     private void helloPrint(){
-        System.out.println(c.colorText("🛠 RISC-V Simulator started. 🚀", TUIColors.PURPLE_BACKGROUND));
+        System.out.println(c.colorText("🛠 RISC-V Simulator started. 🚀", TUIColors.BLUE_BACKGROUND));
         if (progr.length <= 0) {
             System.out.println(c.colorText("Empty program (∅ == 🪹)", TUIColors.YELLOW_BACKGROUND));
             exitPrint();
@@ -118,11 +109,9 @@ public class ISASimulator {
     }
 
     private void printRegState() {
-
-
         if (this.printReg) {
             for (int i : reg) {
-                System.out.print(i + " ");
+                System.out.print(c.colorText(i + " ", TUIColors.PURPLE_BACKGROUND));
             }
             System.out.println();
         }
@@ -130,6 +119,7 @@ public class ISASimulator {
 
     private void decodeInstr(int instr) {
         Instruction i = decoder.process(instr);
+        System.out.println("Opcode: " + i.opcode);
         this.currInstr = instr;
         this.currInstrObj = i;
     }
@@ -257,7 +247,7 @@ public class ISASimulator {
             //  lb
             if (i.funct3 == 0x0) {
                 if (debug) System.out.println("lb");
-                if ((memory[reg[i.rs1] + i.imm]) >> 7 == 1)
+                if ((memory[reg[i.rs1] + i.imm]) >> 7 == 1) // should be sign extend (negative value)
                     reg[i.rd] = (memory[reg[i.rs1] + i.imm]) | 0xFFFFFF00;
                 else
                     reg[i.rd] = (memory[reg[i.rs1] + i.imm]);
@@ -266,41 +256,46 @@ public class ISASimulator {
             //  lh
             if (i.funct3 == 0x1) {
                 if (debug) System.out.println("lh");
-                System.out.println((memory[reg[i.rs1] + i.imm]) | ((memory[reg[i.rs1] + i.imm + 1]) << 8));
-                if ((memory[reg[i.rs1] + i.imm]) >> 7 == 1)
-                    reg[i.rd] = (memory[reg[i.rs1] + i.imm]) | ((memory[reg[i.rs1] + i.imm + 1]) << 8) | 0xFF;
-                else
-                    reg[i.rd] = (int) two(memory[reg[i.rs1] + i.imm] | ((memory[reg[i.rs1] + i.imm + 1]) << 8));
+
+                int result = memory[reg[i.rs1] + i.imm] | ((memory[reg[i.rs1] + i.imm + 1]) << 8);
+
+                if ((result & 0x8000) > 0) {
+                    result |= 0xFFFF0000;
+                }
+                reg[i.rd] = result;
+
                 return;
             }
-            //  LW
+            //  lw
             if (i.funct3 == 0x2) {
                 if (debug) System.out.println("lw");
                 reg[i.rd] = (memory[reg[i.rs1] + i.imm]) | ((memory[reg[i.rs1] + i.imm + 1]) << 8) | ((memory[reg[i.rs1] + i.imm + 2]) << 16) | ((memory[reg[i.rs1] + i.imm + 3]) << 24);
                 return;
             }
-            //  LD
+            //  ld
             if (i.funct3 == 0x3) {
                 if (debug) System.out.println("ld");
                 reg[i.rd] = memory[reg[i.rs1] + i.imm];
                 return;
             }
-            // LBU
+            // lbu
             if (i.funct3 == 0x4) {
                 if (debug) System.out.println("lbu");
-                reg[i.rd] = memory[reg[i.rs1] + i.imm];
+                reg[i.rd] = (int) unsignedValue(memory[reg[i.rs1] + i.imm]);
                 return;
             }
-            // LHU
+            // lhu
             if (i.funct3 == 0x5) {
                 if (debug) System.out.println("lhu");
-                reg[i.rd] = (memory[reg[i.rs1] + i.imm]) | ((memory[reg[i.rs1] + i.imm + 1]) << 8);
+                int result = (memory[reg[i.rs1] + i.imm]) | ((memory[reg[i.rs1] + i.imm + 1]) << 8);
+                reg[i.rd] = (int) unsignedValue(result);
                 return;
             }
-            // LWU
+            // lwu
             if (i.funct3 == 0x6) {
                 if (debug) System.out.println("lwu");
-                reg[i.rd] = (memory[reg[i.rs1] + i.imm]) | ((memory[reg[i.rs1] + i.imm + 1]) << 8) | ((memory[reg[i.rs1] + i.imm + 2]) << 16) | ((memory[reg[i.rs1] + i.imm + 3]) << 24);
+                int result = (memory[reg[i.rs1] + i.imm]) | ((memory[reg[i.rs1] + i.imm + 1]) << 8) | ((memory[reg[i.rs1] + i.imm + 2]) << 16) | ((memory[reg[i.rs1] + i.imm + 3]) << 24);
+                reg[i.rd] = (int) unsignedValue(result);
                 return;
             }
         }
@@ -308,11 +303,7 @@ public class ISASimulator {
             // addi
             if (i.funct3 == 0x0) {
                 if (debug) System.out.println("addi: reg[" + i.rd + "] = " + reg[i.rs1] + " + " + i.imm);
-                if ((i.imm >> 11) == 1) {
-                    reg[i.rd] = reg[i.rs1] + (0xFFFFF000 + i.imm);
-                } else {
-                    reg[i.rd] = reg[i.rs1] + i.imm;
-                }
+                reg[i.rd] = (reg[i.rs1] + i.imm);
                 return;
             }
             // slli
