@@ -179,6 +179,8 @@ public class ISASimulator {
         if((i.funct3 == 0x1)){
             if (debug) System.out.println("sh");
             // Store 16-bit, values from the low bits of register rs2 to memory
+            // imm = offset
+            // split into 2 times 8 bit
             memory[reg[i.rs1] + i.imm] = (reg[i.rs2] & 0xFF);
             memory[reg[i.rs1] + i.imm + 1] = ((reg[i.rs2] >> 8) & 0xFF);
             return;
@@ -187,7 +189,12 @@ public class ISASimulator {
         if((i.funct3 == 0x2)){
             if (debug) System.out.println("sw");
             // Store 32-bit, values from the low bits of register rs2 to memory.
-            memory[reg[i.rs1] + i.imm] = reg[i.rs2];
+            // imm = offset
+            // split into 4 times 8 bit
+            memory[reg[i.rs1] + i.imm] = (reg[i.rs2] & 0xFF);
+            memory[reg[i.rs1] + i.imm + 1] = ((reg[i.rs2] >> 8) & 0xFF);
+            memory[reg[i.rs1] + i.imm + 2] = ((reg[i.rs2] >> 16) & 0xFF);
+            memory[reg[i.rs1] + i.imm + 3] = ((reg[i.rs2] >> 24) & 0xFF);
             return;
         }
 
