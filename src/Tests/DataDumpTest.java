@@ -21,6 +21,8 @@ public class DataDumpTest {
 
         int[] reg = vm.getReg();
 
+        assertTrue(false); // TODO - finish test
+
     }
 
 }

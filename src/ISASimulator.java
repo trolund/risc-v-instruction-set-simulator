@@ -135,6 +135,7 @@ public class ISASimulator {
                 System.out.println(c.colorText("Data dump made", TUIColors.BLACK_BACKGROUND_BRIGHT));
             } catch (IOException e) {
                 System.out.println(c.colorText("Data dump failed", TUIColors.RED_BACKGROUND));
+                e.printStackTrace();
             }
         }
     }
