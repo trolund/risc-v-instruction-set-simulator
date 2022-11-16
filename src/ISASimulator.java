@@ -20,7 +20,6 @@ public class ISASimulator {
     private InstructionDecoder decoder;
     private final TUIColors c;
     private int instrCount;
-
     private boolean forceEnd = false;
     private int exitCode = 0;
 
@@ -99,14 +98,14 @@ public class ISASimulator {
                 fetchInstruction(); // 1. read the instructions from the memory
                 decodeInstr(currInstr); // 2. decode the instruction
                 exeInstr(currInstrObj); // 3. executes the instruction
+
                 instrCount++;
-                reg[0] = 0;
+                reg[0] = 0; // keep 0x = zero
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             pc += 4; // One instruction is four bytes (32 bit) -> move program counter to next instruction 🛠
-
 
             printRegState();
 
@@ -436,25 +435,25 @@ public class ISASimulator {
     }
 
     private void processR(R i) throws ExecutionControl.NotImplementedException {
-        // ADD
+        // add
         if (i.funct3 == 0x00 && i.funct7 == 0x00) {
             if (debug) System.out.println("add");
             reg[i.rd] = reg[i.rs1] + reg[i.rs2];
             return;
         }
-        // SUB
+        // sub
         if (i.funct3 == 0x0 && i.funct7 == 0x20) {
             if (debug) System.out.println("sub");
             reg[i.rd] = reg[i.rs1] - reg[i.rs2];
             return;
         }
-        // SLL
+        // sll
         if (i.funct3 == 0x1 && i.funct7 == 0x00) {
             if (debug) System.out.println("sll");
             reg[i.rd] = reg[i.rs1] << reg[i.rs2];
             return;
         }
-        // XOR
+        // xor
         if (i.funct3 == 0x4 && i.funct7 == 0x0) {
             if (debug) System.out.println("xor");
             reg[i.rd] = reg[i.rs1] ^ reg[i.rs2];
@@ -472,13 +471,13 @@ public class ISASimulator {
             reg[i.rd] = reg[i.rs1] >> reg[i.rs2];
             return;
         }
-        //  OR
+        //  or
         if (i.funct3 == 0x6 && i.funct7 == 0x00) {
             if (debug) System.out.println("or");
             reg[i.rd] = reg[i.rs1] | reg[i.rs2];
             return;
         }
-        // AND
+        // and
         if (i.funct3 == 0x7 && i.funct7 == 0x00) {
             if (debug) System.out.println("and");
             reg[i.rd] = reg[i.rs1] & reg[i.rs2];
