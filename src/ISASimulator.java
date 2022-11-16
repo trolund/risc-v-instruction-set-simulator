@@ -15,7 +15,6 @@ public class ISASimulator {
     private int[] reg;
     private int[] memory;
     private int currInstr;
-
     private int[] progr;
     private Instruction currInstrObj;
     private InstructionDecoder decoder;
@@ -50,9 +49,28 @@ public class ISASimulator {
         return reg;
     }
 
+    private void loadData(){
+        for (int i = 0; i < this.progr.length * 4; i = i + 4) {
+            // split into 4 times 8 bit
+            int instr = progr[i >> 2];
+            memory[i] = (instr & 0xFF);
+            memory[i + 1] = ((instr >> 8) & 0xFF);
+            memory[i + 2] = ((instr >> 16) & 0xFF);
+            memory[i + 3] = ((instr >> 24) & 0xFF);
+        }
+    }
+
+    private int loadInstruction(int i){
+        int m1 = memory[i];
+        int m2 = memory[i + 1] << 8;
+        int m3 = memory[i + 2] << 16;
+        int m4 = memory[i + 3] << 24;
+        return  m1 |  m2 | m3 | m4;
+    }
+
     private void fetchInstruction(){
         // fetch new instruction
-        currInstr = progr[pc >> 2];
+        currInstr = loadInstruction(pc);
         // print instruction as hex if in debug mode
         String hex = Integer.toHexString(pc);
         if (debug) System.out.println(c.colorText("Hex instr (" + hex + "), PC: (" + (pc >> 2) + ") : " + Integer.toHexString(currInstr), TUIColors.YELLOW_UNDERLINED));
@@ -70,6 +88,7 @@ public class ISASimulator {
 
     public void runProgram(int[] progr) {
         this.progr = progr;
+        loadData();
         helloPrint();
 
         while (true) {
@@ -256,8 +275,10 @@ public class ISASimulator {
                 if (debug) System.out.println("lb");
                 if ((memory[reg[i.rs1] + i.imm]) >> 7 == 1) // should be sign extend (negative value)
                     reg[i.rd] = sext((memory[reg[i.rs1] + i.imm]), 8);
-                else
-                    reg[i.rd] = (memory[reg[i.rs1] + i.imm]);
+                else {
+                    int res = (memory[reg[i.rs1] + i.imm]);
+                    reg[i.rd] = res;
+                }
                 return;
             }
             //  lh
@@ -496,4 +517,6 @@ public class ISASimulator {
     private long unsignedValue(int v) {
         return v & 0xffffffffL;
     }
+
+
 }
