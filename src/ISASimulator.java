@@ -60,11 +60,7 @@ public class ISASimulator {
     }
 
     private int loadInstruction(int i){
-        int m1 = memory[i];
-        int m2 = memory[i + 1] << 8;
-        int m3 = memory[i + 2] << 16;
-        int m4 = memory[i + 3] << 24;
-        return  m1 |  m2 | m3 | m4;
+        return  memory[i] |  memory[i + 1] << 8 | memory[i + 2] << 16 | memory[i + 3] << 24;
     }
 
     private void fetchInstruction(){
