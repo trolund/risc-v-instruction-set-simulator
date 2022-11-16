@@ -88,8 +88,9 @@ public class ISASimulator {
 
     public void runProgram(int[] progr) {
         this.progr = progr;
-        loadData();
-        helloPrint();
+        helloPrint(); // start up print in terminal
+        loadData(); // load the program into memory
+
 
         while (true) {
             if(forceEnd){ break; }
@@ -345,7 +346,7 @@ public class ISASimulator {
             // sltiu
             if (i.funct3 == 0x3) {
                 if (debug) System.out.println("sltiu");
-                reg[i.rd] = (reg[i.rs1] < unsignedValue(i.imm)) ? 1 : 0;
+                reg[i.rd] = (unsignedValue(reg[i.rs1]) < unsignedValue(i.imm)) ? 1 : 0;
                 return;
             }
             // xori
