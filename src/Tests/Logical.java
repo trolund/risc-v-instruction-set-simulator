@@ -4,7 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class Logical {
 
-    private ProgramLoader loader = new ProgramLoader();
+    private final ProgramLoader loader = new ProgramLoader();
 
     @Test
     public void and(){

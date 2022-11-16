@@ -7,6 +7,8 @@ import Instruction.UJ;
 import Instruction.abstact.Instruction;
 import jdk.jshell.spi.ExecutionControl;
 
+import java.io.IOException;
+
 public class ISASimulator {
 
     private boolean printReg = true;
@@ -18,15 +20,22 @@ public class ISASimulator {
     private int[] progr;
     private Instruction currInstrObj;
     private InstructionDecoder decoder;
+    private DataDumper dataDumper;
+    private boolean dumpData;
     private final TUIColors c;
     private int instrCount;
     private boolean forceEnd = false;
     private int exitCode = 0;
 
-    public ISASimulator(boolean printReg, boolean debug) {
+    private String programName;
+
+    public ISASimulator(String programName, boolean printReg, boolean debug, boolean dumpData) {
+        this.programName = programName;
         this.printReg = printReg;
         this.debug = debug;
+        this.dumpData = dumpData;
         this.c = new TUIColors();
+        this.dataDumper = new DataDumper();
         resetSim();
     }
 
@@ -67,9 +76,10 @@ public class ISASimulator {
         // fetch new instruction
         currInstr = loadInstruction(pc);
         // print instruction as hex if in debug mode
-        String hex = Integer.toHexString(pc);
-        if (debug) System.out.println(c.colorText("Hex instr (" + hex + "), PC: (" + (pc >> 2) + ") : " + Integer.toHexString(currInstr), TUIColors.YELLOW_UNDERLINED));
-
+        if (debug) {
+            String hex = Integer.toHexString(pc);
+            System.out.println(c.colorText("Hex instr (" + hex + "), PC: (" + (pc >> 2) + ") : " + Integer.toHexString(currInstr), TUIColors.YELLOW_UNDERLINED));
+        }
     }
 
     private void helloPrint(){
@@ -88,10 +98,12 @@ public class ISASimulator {
 
 
         while (true) {
-            if(forceEnd){ break; }
+            // || currInstr == 0x00000073
+            if(forceEnd || currInstr == 0x00000073){ break; } // TODO stop at ecall
 
             try {
                 fetchInstruction(); // 1. read the instructions from the memory
+                if(currInstr == 4){ break; }
                 decodeInstr(currInstr); // 2. decode the instruction
                 exeInstr(currInstrObj); // 3. executes the instruction
 
@@ -99,6 +111,7 @@ public class ISASimulator {
                 reg[0] = 0; // keep 0x = zero
             } catch (Exception e) {
                 e.printStackTrace();
+                exit(99);
             }
 
             pc += 4; // One instruction is four bytes (32 bit) -> move program counter to next instruction 🛠
@@ -112,6 +125,18 @@ public class ISASimulator {
         }
 
         exitPrint();
+        writeDump();
+    }
+
+    private void writeDump(){
+        if(this.dumpData){
+            try {
+                this.dataDumper.writeFile(this.programName, this.reg);
+                System.out.println(c.colorText("Data dump made", TUIColors.BLACK_BACKGROUND_BRIGHT));
+            } catch (IOException e) {
+                System.out.println(c.colorText("Data dump failed", TUIColors.RED_BACKGROUND));
+            }
+        }
     }
 
     private void exit(int exitCode) {
@@ -236,7 +261,6 @@ public class ISASimulator {
         if (i.opcode == 0x73) {
             if (debug) System.out.println("ecall");
             int a0 = reg[10];
-
             if (a0 == 1) {
                 System.out.println(reg[11]);
             } else if (a0 == 4) {
@@ -244,14 +268,15 @@ public class ISASimulator {
             } else if (a0 == 9) { // allocates a1 bytes on the heap, returns pointer to start in a0
 
             } else if (a0 == 10) {
+                System.out.println(c.colorText("ecall: " + a0, TUIColors.PURPLE_BACKGROUND));
                 exit(0);
             } else if (a0 == 11) {
                 System.out.println((char) reg[11]);
             } else if (a0 == 17) {
+                System.out.println(c.colorText("ecall: " + a0, TUIColors.PURPLE_BACKGROUND));
                 exit(reg[11]);
             } else {
                 System.out.println(c.colorText("Invalid ecall: " + a0, TUIColors.YELLOW_BACKGROUND));
-                exit(0);
             }
             return;
         }

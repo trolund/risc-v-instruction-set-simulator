@@ -3,18 +3,17 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.sql.Timestamp;
 
-public class Dump {
+public class DataDumper {
 
-    private static String dumpPath = "dump/";
-
-    public void writeFile(int[] reg) throws IOException {
-        File outputFile = new File(getName());
+    public void writeFile(String name, int[] reg) throws IOException {
+        File outputFile = new File(getName(name));
         Files.write(outputFile.toPath(), toByte(reg));
     }
 
-    private String getName(){
+    private String getName(String name){
         Timestamp ts = new Timestamp(System.currentTimeMillis());
-        return dumpPath + ts.toString() + ".d";
+        String dumpPath = "./dump/";
+        return dumpPath + name + "_" + ts + ".res";
     }
 
     private byte[] toByte(int[] data) throws IOException {

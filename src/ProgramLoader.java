@@ -9,22 +9,23 @@ public class ProgramLoader {
     enum ProgramType {
         ASSEMBLY,
         BINARY,
-        TEXT
+        TEXT,
+        DUMP
     }
 
     public int[] loadTest(String programName) {
-        return loadTest(programName, ProgramType.TEXT, true);
+        return loadTest(programName, ProgramType.TEXT, ".txt");
     }
 
     public int[] loadTest(String programName, ProgramType programType) {
-        return loadTest(programName, programType, true);
+        return loadTest(programName, programType, ".txt");
     }
 
-    public int[] loadTest(String programName, ProgramType programType, boolean test) {
+    public int[] loadTest(String programName, ProgramType programType, String ex) {
         InputStream inputStream = null;
         try {
             ClassLoader classLoader = getClass().getClassLoader();
-            File file = new File(Objects.requireNonNull(classLoader.getResource("TestPrograms/" + programType + "/" + programName + ".txt")).getFile());
+            File file = new File(Objects.requireNonNull(classLoader.getResource("TestPrograms/" + programType + "/" + programName + ex)).getFile());
             inputStream = new FileInputStream(file);
             return transformInputStream(inputStream);
         }catch (Exception e) {

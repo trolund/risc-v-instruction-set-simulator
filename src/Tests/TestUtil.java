@@ -15,8 +15,13 @@ public class TestUtil {
         return runTest(bin, res);
     }
 
+    private String withOutExt(String s){
+        return s.split("\\.")[0];
+    }
+
     private boolean runTest(File bin, File res) throws IOException {
-        ISASimulator vm = new ISASimulator(true, true);
+
+        ISASimulator vm = new ISASimulator(withOutExt(bin.getName()), true, true, false);
 
         System.out.println(bin.getName() + " == " +  res.getName());
 

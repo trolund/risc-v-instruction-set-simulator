@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class Task1 {
 
-    private TestUtil test = new TestUtil();
+    private final TestUtil test = new TestUtil();
 
     @Test
     public void addlarge() throws IOException {
