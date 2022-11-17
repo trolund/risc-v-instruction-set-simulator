@@ -36,7 +36,10 @@ public class ISASimulator {
         this.dumpData = dumpData;
         this.c = new TUIColors();
         this.dataDumper = new DataDumper();
+        // Reset machine and allocate space for reg and mem
         resetSim();
+        // Start up print in terminal
+        System.out.println(c.colorText("🛠 RISC-V Simulator started 🚀", TUIColors.BLUE_BACKGROUND));
     }
 
     public ISASimulator() {
@@ -82,18 +85,15 @@ public class ISASimulator {
         }
     }
 
-    private void helloPrint(){
-        System.out.println(c.colorText("🛠 RISC-V Simulator started. 🚀", TUIColors.BLUE_BACKGROUND));
-        if (progr.length <= 0) {
+    private void empty(){
+        if (debug && progr.length <= 0) {
             System.out.println(c.colorText("Empty program (∅ == 🪹)", TUIColors.YELLOW_BACKGROUND));
-            exitPrint();
-            exit(0);
         }
     }
 
     public void runProgram(int[] progr) {
         this.progr = progr;
-        helloPrint(); // start up print in terminal
+        empty(); // print if the program is empty - just for debugging
         loadData(); // load the program into memory
 
 
