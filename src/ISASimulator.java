@@ -99,7 +99,7 @@ public class ISASimulator {
 
         while (true) {
             // || currInstr == 0x00000073
-            if(forceEnd || currInstr == 0x00000073){ break; } // TODO stop at ecall
+            if(forceEnd){ break; } // TODO stop at ecall
 
             try {
                 fetchInstruction(); // 1. read the instructions from the memory
@@ -277,6 +277,7 @@ public class ISASimulator {
                 exit(reg[11]);
             } else {
                 System.out.println(c.colorText("Invalid ecall: " + a0, TUIColors.YELLOW_BACKGROUND));
+                exit(0);
             }
             return;
         }
