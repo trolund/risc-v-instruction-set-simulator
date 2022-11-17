@@ -8,12 +8,8 @@ import Instruction.UJ;
 
 public class InstructionDecoder {
 
-    public <T extends Instruction> T process(int instr) {
-        try{
-            return (T) process(instr, false);
-        }catch (Exception e) {
-            return null;
-        }
+    public <T extends Instruction> T process(int instr) throws Exception {
+        return (T) process(instr, false);
     }
 
     public Instruction process(int instr, boolean debug) throws Exception {

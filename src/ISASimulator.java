@@ -46,7 +46,7 @@ public class ISASimulator {
 
     private void resetSim() {
         this.pc = 0;
-        this.memory = new int[4000000]; // 1 mb
+        this.memory = new int[0x100000]; // 1 mb
         this.reg = new int[32];
         this.reg[2] = 0; // SP = 0 at init
         this.decoder = new InstructionDecoder();
@@ -103,7 +103,6 @@ public class ISASimulator {
 
             try {
                 fetchInstruction(); // 1. read the instructions from the memory
-                if(currInstr == 4){ break; }
                 decodeInstr(currInstr); // 2. decode the instruction
                 exeInstr(currInstrObj); // 3. executes the instruction
 
@@ -158,7 +157,7 @@ public class ISASimulator {
         }
     }
 
-    private void decodeInstr(int instr) {
+    private void decodeInstr(int instr) throws Exception {
         Instruction i = decoder.process(instr);
         System.out.println("Opcode: " + i.opcode);
         this.currInstr = instr;

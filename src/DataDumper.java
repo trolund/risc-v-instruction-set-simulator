@@ -1,28 +1,40 @@
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Timestamp;
 
 public class DataDumper {
 
     public void writeFile(String name, int[] reg) throws IOException {
         File outputFile = new File(getName(name));
-        Files.write(outputFile.toPath(), toByte(reg));
+        //Path pathToFile = Paths.get(getName(name));
+        // ((System.out.println(pathToFile.toAbsolutePath());
+        //Files.write(outputFile.toPath(), toByte(reg));
+
+        DataOutputStream os = new DataOutputStream(new FileOutputStream(getName(name)));
+
+        //write the length first so that you can later know how many ints to read
+        for (int i = 0 ; i < reg.length; ++i){
+                int x = Integer.reverseBytes(reg[i]);
+                os.writeInt(x);
+        }
+        os.close();
     }
 
     private String getName(String name){
-        Timestamp ts = new Timestamp(System.currentTimeMillis());
-        String dumpPath = "./dump/";
-        return dumpPath + name + "_" + ts + ".res";
+        // Timestamp ts = new Timestamp(System.currentTimeMillis());
+        String dumpPath = "dump/";
+        return dumpPath + name + ".res";
     }
 
-    private byte[] toByte(int[] data) throws IOException {
-
-        byte[] bytes = new byte[data.length];
-        for (int i = 0; i < bytes.length; i++) {
-            bytes[i] = (byte) data[i];
-        }
-        return bytes;
-    }
+//    private byte[] toByte(int[] data) throws IOException {
+//
+//        byte[] bytes = new byte[data.length];
+//        for (int i = 0; i < bytes.length; i++) {
+//            bytes[i] = data[i];
+//        }
+//        return bytes;
+//    }
 
 }
