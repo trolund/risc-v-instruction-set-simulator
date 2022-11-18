@@ -9,6 +9,7 @@ public class UJ extends RD {
 
     public UJ(int instr) {
         super(instr);
+        // https://msyksphinz-self.github.io/riscv-isadoc/html/rvi.html#jal
         imm = instr & 0xFF000; //imm[19:12]
         imm |= (instr >> 9) & 0x800; //imm[11]
         imm |= (instr >> 20) & 0x7FE; //imm[10:1]

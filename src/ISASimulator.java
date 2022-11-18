@@ -49,7 +49,7 @@ public class ISASimulator {
 
     private void resetSim() {
         this.pc = 0;
-        this.memory = new int[0x100000]; // 1 mb
+        this.memory = new int[0x100000]; // 1 mb // 0x100000
         this.reg = new int[32];
         this.reg[2] = 0; // SP = 0 at init
         this.decoder = new InstructionDecoder();
@@ -260,34 +260,35 @@ public class ISASimulator {
         // ecall https://github.com/kvakil/venus/wiki/Environmental-Calls
         if (i.opcode == 0x73) {
             if (debug) System.out.println("ecall");
-            int a0 = reg[10];
-            if (a0 == 1) {
+            int a7 = reg[17];
+            if (a7 == 1) {
                 System.out.println(reg[11]);
-            } else if (a0 == 4) {
+            } else if (a7 == 4) {
                 System.out.println(reg[11]); // TODO print string?
-            } else if (a0 == 9) { // allocates a1 bytes on the heap, returns pointer to start in a0
+            } else if (a7 == 9) { // allocates a1 bytes on the heap, returns pointer to start in a7
 
-            } else if (a0 == 10) {
-                System.out.println(c.colorText("ecall: " + a0, TUIColors.PURPLE_BACKGROUND));
+            } else if (a7 == 10) {
+                System.out.println(c.colorText("ecall: " + a7, TUIColors.PURPLE_BACKGROUND));
                 exit(0);
-            } else if (a0 == 11) {
+            } else if (a7 == 11) {
                 System.out.println((char) reg[11]);
-            } else if (a0 == 17) {
-                System.out.println(c.colorText("ecall: " + a0, TUIColors.PURPLE_BACKGROUND));
+            } else if (a7 == 17) {
+                System.out.println(c.colorText("ecall: " + a7, TUIColors.PURPLE_BACKGROUND));
                 exit(reg[11]);
             } else {
-                System.out.println(c.colorText("Invalid ecall: " + a0, TUIColors.YELLOW_BACKGROUND));
-                exit(0);
+                System.out.println(c.colorText("Invalid ecall: " + a7, TUIColors.YELLOW_BACKGROUND));
             }
             return;
         }
         if (i.opcode == 0x67) {
             // Jalr instruction
+            // t =pc+4; pc=(x[rs1]+sext(offset))&∼1; x[rd]=t
             if (debug) System.out.println("jalr");
             if (i.funct3 == 0x0) {
-                reg[i.rd] = pc + 4;
+                int temp = pc + 4;
                 // move pc
-                pc = reg[i.rs1] + i.imm - 4 & 0xFFFFFFFE;
+                pc = (reg[i.rs1] + i.imm - 4) & 0xFFFFFFFE;
+                reg[i.rd] = temp;
             }
             return;
         }
@@ -521,16 +522,6 @@ public class ISASimulator {
         throw new ExecutionControl.NotImplementedException(c.colorText("R-type instruction not implemented 🛠😤", TUIColors.RED));
     }
 
-    private int sext(int v, int by) throws Exception {
-        switch (by) {
-            case 8 -> v |= 0xFFFFFF00;
-            case 16 -> v |= 0xFFFF0000;
-            case 24 -> v |= 0xFF000000;
-            default -> throw new Exception("can not sext : " + v + " by :" + by);
-        }
-        return v;
-    }
-
     private long two(int v) {
         int val = (~v) + 1;
         return -(val & 0xFFFF);
@@ -538,6 +529,11 @@ public class ISASimulator {
 
     private long unsignedValue(int v) {
         return v & 0xffffffffL;
+    }
+
+    private int sext(int val, int bits) {
+        int shift = 32 - bits;
+        return val << shift >> shift;
     }
 
 
