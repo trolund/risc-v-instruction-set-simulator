@@ -283,9 +283,9 @@ public class ISASimulator {
         if (i.opcode == 0x73) {
             if (debug) System.out.println("ecall");
             int action = reg[ecallReg];
-            int arg = reg[11];
+            int arg = reg[10];
             if (action == 1) {
-                System.out.println(reg[11]);
+                System.out.println(reg[10]);
             } else if (action == 4) {
                 int x = arg;
                 int ch = memory[x];
@@ -299,10 +299,10 @@ public class ISASimulator {
                 if (debug) System.out.println(c.colorText("ecall (exit): " + action, TUIColors.BLUE_BACKGROUND));
                 exit(0);
             } else if (action == 11) {
-                if (debug) System.out.println((char) reg[11]);
+                if (debug) System.out.println((char) reg[10]);
             } else if (action == 17) {
                 if (debug) System.out.println(c.colorText("ecall: " + action, TUIColors.BLUE_BACKGROUND));
-                exit(reg[11]);
+                exit(reg[10]);
             } else {
                 if (debug) System.out.println(c.colorText("Invalid ecall: " + action, TUIColors.YELLOW_BACKGROUND));
             }
@@ -549,11 +549,6 @@ public class ISASimulator {
         throw new ExecutionControl.NotImplementedException(c.colorText("R-type instruction not implemented 🛠😤", TUIColors.RED));
     }
 
-    private long two(int v) {
-        int val = (~v) + 1;
-        return -(val & 0xFFFF);
-    }
-
     private long unsignedValue(int v) {
         return v & 0xffffffffL;
     }
@@ -562,6 +557,5 @@ public class ISASimulator {
         int shift = 32 - bits;
         return val << shift >> shift;
     }
-
 
 }
