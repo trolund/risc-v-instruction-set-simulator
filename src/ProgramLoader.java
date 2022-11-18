@@ -138,7 +138,7 @@ public class ProgramLoader {
         }
         binFile.close();
 
-        return program.stream().mapToInt(i -> (int) i).toArray();
+        return program.stream().mapToInt(i -> i).toArray();
     }
 
     private int[] transformInputStream(InputStream inputStream) throws IOException {

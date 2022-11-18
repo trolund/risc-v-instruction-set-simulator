@@ -9,19 +9,29 @@ public class TestUtil {
     private final ProgramLoader loader = new ProgramLoader();
     private final TUIColors color = new TUIColors();
 
+    boolean runTestWithName(int task, String name, ISASimulator mashine) throws IOException {
+        File bin = loader.getFilesWithExFirst("TestPrograms/BINARY/task" + task + "/", name, "bin");
+        File res = loader.getFilesWithExFirst("TestPrograms/BINARY/task" + task + "/", name,"res");
+        return runTest(bin, res, mashine);
+    }
+
     boolean runTestWithName(int task, String name) throws IOException {
         File bin = loader.getFilesWithExFirst("TestPrograms/BINARY/task" + task + "/", name, "bin");
         File res = loader.getFilesWithExFirst("TestPrograms/BINARY/task" + task + "/", name,"res");
-        return runTest(bin, res);
+        return runTest(bin, res, null);
     }
 
     private String withOutExt(String s){
         return s.split("\\.")[0];
     }
 
-    private boolean runTest(File bin, File res) throws IOException {
-
-        ISASimulator vm = new ISASimulator(withOutExt(bin.getName()), true, true, false);
+    private boolean runTest(File bin, File res, ISASimulator mashine) throws IOException {
+        ISASimulator vm;
+        if(mashine == null){
+            vm = new ISASimulator(withOutExt(bin.getName()), true, true, false);
+        }else {
+            vm = mashine;
+        }
 
         System.out.println(bin.getName() + " == " +  res.getName());
 
@@ -51,7 +61,7 @@ public class TestUtil {
 
         for (int i = 0; i < binaryFiles.length; i++) {
             File res = loader.findFileWithName(binaryFiles[i].getName(), resFiles);
-            boolean testResult = runTest(binaryFiles[i], res);
+            boolean testResult = runTest(binaryFiles[i], res, null);
             if(testResult) {
                 System.out.println("Correct ✅");
                 c++;

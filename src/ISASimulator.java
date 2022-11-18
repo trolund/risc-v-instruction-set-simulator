@@ -26,8 +26,22 @@ public class ISASimulator {
     private int instrCount;
     private boolean forceEnd = false;
     private int exitCode = 0;
-
     private String programName;
+    private int ecallReg = 17;
+
+    public ISASimulator(String programName, boolean printReg, boolean debug, boolean dumpData, int ecallReg) {
+        this.programName = programName;
+        this.printReg = printReg;
+        this.debug = debug;
+        this.dumpData = dumpData;
+        this.c = new TUIColors();
+        this.dataDumper = new DataDumper();
+        this.ecallReg = ecallReg;
+        // Reset machine and allocate space for reg and mem
+        resetSim();
+        // Start up print in terminal
+        System.out.println(c.colorText("🛠 RISC-V Simulator started 🚀", TUIColors.BLUE_BACKGROUND));
+    }
 
     public ISASimulator(String programName, boolean printReg, boolean debug, boolean dumpData) {
         this.programName = programName;
@@ -81,7 +95,7 @@ public class ISASimulator {
         // print instruction as hex if in debug mode
         if (debug) {
             String hex = Integer.toHexString(pc);
-            System.out.println(c.colorText("Hex instr (" + hex + "), PC: (" + (pc >> 2) + ") : " + Integer.toHexString(currInstr), TUIColors.YELLOW_UNDERLINED));
+            System.out.println(c.colorText("PC Hex: (" + hex + "), PC: (" + (pc >> 2) + ") : " + Integer.toHexString(currInstr), TUIColors.YELLOW_UNDERLINED));
         }
     }
 
@@ -98,14 +112,12 @@ public class ISASimulator {
 
 
         while (true) {
-            // || currInstr == 0x00000073
-            if(forceEnd){ break; } // TODO stop at ecall
+            if(forceEnd){ break; }
 
             try {
                 fetchInstruction(); // 1. read the instructions from the memory
                 decodeInstr(currInstr); // 2. decode the instruction
                 exeInstr(currInstrObj); // 3. executes the instruction
-
                 instrCount++;
                 reg[0] = 0; // keep 0x = zero
             } catch (Exception e) {
@@ -257,26 +269,32 @@ public class ISASimulator {
     }
 
     private void processI(I i) throws Exception {
-        // ecall https://github.com/kvakil/venus/wiki/Environmental-Calls
+        // ecall https://github.com/mortbopet/Ripes/blob/master/docs/ecalls.md
         if (i.opcode == 0x73) {
             if (debug) System.out.println("ecall");
-            int a7 = reg[17];
-            if (a7 == 1) {
+            int action = reg[ecallReg];
+            int arg = reg[11];
+            if (action == 1) {
                 System.out.println(reg[11]);
-            } else if (a7 == 4) {
-                System.out.println(reg[11]); // TODO print string?
-            } else if (a7 == 9) { // allocates a1 bytes on the heap, returns pointer to start in a7
+            } else if (action == 4) {
+                int x = arg;
+                int ch = memory[x];
+                while(ch != 0x00){
+                    System.out.println((char) ch);
+                    ch = memory[++x];
+                }
+            } else if (action == 9) { // allocates a1 bytes on the heap, returns pointer to start in a7
 
-            } else if (a7 == 10) {
-                System.out.println(c.colorText("ecall: " + a7, TUIColors.PURPLE_BACKGROUND));
+            } else if (action == 10) {
+                System.out.println(c.colorText("ecall: " + action, TUIColors.PURPLE_BACKGROUND));
                 exit(0);
-            } else if (a7 == 11) {
+            } else if (action == 11) {
                 System.out.println((char) reg[11]);
-            } else if (a7 == 17) {
-                System.out.println(c.colorText("ecall: " + a7, TUIColors.PURPLE_BACKGROUND));
+            } else if (action == 17) {
+                System.out.println(c.colorText("ecall: " + action, TUIColors.PURPLE_BACKGROUND));
                 exit(reg[11]);
             } else {
-                System.out.println(c.colorText("Invalid ecall: " + a7, TUIColors.YELLOW_BACKGROUND));
+                System.out.println(c.colorText("Invalid ecall: " + action, TUIColors.YELLOW_BACKGROUND));
             }
             return;
         }
@@ -377,13 +395,13 @@ public class ISASimulator {
                 reg[i.rd] = reg[i.rs1] ^ i.imm;
                 return;
             }
-            //srli
+            // srli
             if (i.funct3 == 0x5 && i.funct6 == 0x00) {
                 if (debug) System.out.println("srli");
                 reg[i.rd] = (int) (unsignedValue(reg[i.rs1]) >> unsignedValue(i.imm));
                 return;
             }
-            //srai
+            // srai
             if (i.funct3 == 0x5 && i.funct6 == 0x10) {
                 if (debug) System.out.println("srai");
                 reg[i.rd] = reg[i.rs1] >> i.imm;
@@ -395,9 +413,9 @@ public class ISASimulator {
                 reg[i.rd] = reg[i.rs1] | i.imm;
                 return;
             }
-            // ADDI
+            // andi
             if (i.funct3 == 0x7) {
-                if (debug) System.out.println("addi");
+                if (debug) System.out.println("andi");
                 reg[i.rd] = reg[i.rs1] & i.imm;
                 return;
             }
@@ -453,7 +471,6 @@ public class ISASimulator {
             if (unsignedValue(reg[i.rs1]) >= unsignedValue(reg[i.rs2])) {
                 pc = pc + i.imm - 4;
             }
-            return;
         }
     }
 

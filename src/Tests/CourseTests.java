@@ -1,18 +1,12 @@
-/*
-import IO.FileReader;
 import org.junit.jupiter.api.Test;
-
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CourseTests {
 
-    private TestUtil test = new TestUtil();
+    private final TestUtil test = new TestUtil();
 
     @Test
     public void task1() throws IOException {
@@ -53,4 +47,4 @@ public class CourseTests {
         assertTrue(test.runTestWithName(3, "width"));
     }
 }
-*/
+

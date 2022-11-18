@@ -78,7 +78,8 @@ public class InstructionTests {
 
     @Test
     public void ecall() throws IOException {
-        assertTrue(test.runTestWithName(6, "test_ecall"));
+        ISASimulator vm = new ISASimulator("test_sim", true, true, false, 10);
+        assertTrue(test.runTestWithName(6, "test_ecall", vm));
     }
 
     @Test
