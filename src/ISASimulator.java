@@ -11,8 +11,8 @@ import java.io.IOException;
 
 public class ISASimulator {
 
-    private boolean printReg = true;
-    private boolean debug = true;
+    private boolean printReg = false;
+    private boolean debug = false;
     private int pc;
     private int[] reg;
     private int[] memory;
@@ -133,7 +133,9 @@ public class ISASimulator {
 
             pc += 4; // One instruction is four bytes (32 bit) -> move program counter to next instruction 🛠
 
-            printRegState();
+            if (this.printReg) {
+                printRegState();
+            }
 
             // program have hit the end.
             if ((pc >> 2) >= progr.length) {
@@ -168,12 +170,10 @@ public class ISASimulator {
     }
 
     private void printRegState() {
-        if (this.printReg) {
             for (int i : reg) {
                 System.out.print(c.colorText(i + " ", TUIColors.PURPLE_BACKGROUND));
             }
             System.out.println();
-        }
     }
 
     private void decodeInstr(int instr) throws Exception {
