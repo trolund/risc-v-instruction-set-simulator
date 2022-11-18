@@ -1,3 +1,6 @@
+package Core;
+
+import IO.DataDumper;
 import Instruction.R;
 import Instruction.I;
 import Instruction.U;

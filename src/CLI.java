@@ -1,8 +1,9 @@
+import Core.ISASimulator;
+import IO.ProgramLoader;
 import picocli.CommandLine;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.concurrent.Callable;
 
 @CommandLine.Command(name = "RV32I", mixinStandardHelpOptions = true, version = "RV32I 1.0", description = "A basic RISC-V simulator. Supporting the RV32I instructions.")

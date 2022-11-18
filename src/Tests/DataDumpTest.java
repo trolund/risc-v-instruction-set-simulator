@@ -1,3 +1,5 @@
+import Core.ISASimulator;
+import IO.ProgramLoader;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;

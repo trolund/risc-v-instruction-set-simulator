@@ -1,3 +1,5 @@
+package Core;
+
 import Instruction.abstact.Instruction;
 import Instruction.R;
 import Instruction.I;
