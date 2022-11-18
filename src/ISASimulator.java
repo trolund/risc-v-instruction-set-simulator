@@ -28,8 +28,9 @@ public class ISASimulator {
     private int exitCode = 0;
     private String programName;
     private int ecallReg = 17;
+    private boolean exitPrint = false;
 
-    public ISASimulator(String programName, boolean printReg, boolean debug, boolean dumpData, int ecallReg) {
+    public ISASimulator(String programName, boolean printReg, boolean debug, boolean dumpData, int ecallReg, boolean exitPrint) {
         this.programName = programName;
         this.printReg = printReg;
         this.debug = debug;
@@ -37,10 +38,10 @@ public class ISASimulator {
         this.c = new TUIColors();
         this.dataDumper = new DataDumper();
         this.ecallReg = ecallReg;
+        this.exitPrint = exitPrint;
         // Reset machine and allocate space for reg and mem
         resetSim();
-        // Start up print in terminal
-        System.out.println(c.colorText("🛠 RISC-V Simulator started 🚀", TUIColors.BLUE_BACKGROUND));
+        startUpPrint();
     }
 
     public ISASimulator(String programName, boolean printReg, boolean debug, boolean dumpData) {
@@ -52,8 +53,13 @@ public class ISASimulator {
         this.dataDumper = new DataDumper();
         // Reset machine and allocate space for reg and mem
         resetSim();
+        startUpPrint();
+    }
+
+    public void startUpPrint(){
         // Start up print in terminal
         System.out.println(c.colorText("🛠 RISC-V Simulator started 🚀", TUIColors.BLUE_BACKGROUND));
+        if (!programName.isEmpty()) System.out.println(c.colorText("🏃 Running program : " + programName, TUIColors.PURPLE_BACKGROUND));
     }
 
     public ISASimulator() {
@@ -157,7 +163,8 @@ public class ISASimulator {
     }
     private void exitPrint() {
         System.out.println(c.colorText("Program exit with code: " + exitCode, TUIColors.CYAN));
-        System.out.println(c.colorText("Executed " + instrCount + " instructions", TUIColors.CYAN_BACKGROUND));
+        if (exitPrint && !debug) printRegState();
+        if(debug) System.out.println(c.colorText("Executed " + instrCount + " instructions", TUIColors.CYAN_BACKGROUND));
     }
 
     private void printRegState() {
@@ -171,7 +178,7 @@ public class ISASimulator {
 
     private void decodeInstr(int instr) throws Exception {
         Instruction i = decoder.process(instr);
-        System.out.println("Opcode: " + i.opcode);
+        if (debug) System.out.println("Opcode: " + i.opcode);
         this.currInstr = instr;
         this.currInstrObj = i;
     }
@@ -286,15 +293,15 @@ public class ISASimulator {
             } else if (action == 9) { // allocates a1 bytes on the heap, returns pointer to start in a7
 
             } else if (action == 10) {
-                System.out.println(c.colorText("ecall (exit): " + action, TUIColors.BLUE_BACKGROUND));
+                if (debug) System.out.println(c.colorText("ecall (exit): " + action, TUIColors.BLUE_BACKGROUND));
                 exit(0);
             } else if (action == 11) {
-                System.out.println((char) reg[11]);
+                if (debug) System.out.println((char) reg[11]);
             } else if (action == 17) {
-                System.out.println(c.colorText("ecall: " + action, TUIColors.BLUE_BACKGROUND));
+                if (debug) System.out.println(c.colorText("ecall: " + action, TUIColors.BLUE_BACKGROUND));
                 exit(reg[11]);
             } else {
-                System.out.println(c.colorText("Invalid ecall: " + action, TUIColors.YELLOW_BACKGROUND));
+                if (debug) System.out.println(c.colorText("Invalid ecall: " + action, TUIColors.YELLOW_BACKGROUND));
             }
             return;
         }

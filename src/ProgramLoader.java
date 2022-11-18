@@ -48,6 +48,7 @@ public class ProgramLoader {
     public int[] loadProgram(String url) {
         InputStream inputStream = null;
         try {
+            System.out.println(System.getProperty("user.dir") + url);
             File file = new File(url);
             inputStream = new FileInputStream(file);
             return transformInputStream(inputStream);
