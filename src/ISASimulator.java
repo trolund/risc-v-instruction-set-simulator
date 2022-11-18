@@ -286,12 +286,12 @@ public class ISASimulator {
             } else if (action == 9) { // allocates a1 bytes on the heap, returns pointer to start in a7
 
             } else if (action == 10) {
-                System.out.println(c.colorText("ecall: " + action, TUIColors.PURPLE_BACKGROUND));
+                System.out.println(c.colorText("ecall (exit): " + action, TUIColors.BLUE_BACKGROUND));
                 exit(0);
             } else if (action == 11) {
                 System.out.println((char) reg[11]);
             } else if (action == 17) {
-                System.out.println(c.colorText("ecall: " + action, TUIColors.PURPLE_BACKGROUND));
+                System.out.println(c.colorText("ecall: " + action, TUIColors.BLUE_BACKGROUND));
                 exit(reg[11]);
             } else {
                 System.out.println(c.colorText("Invalid ecall: " + action, TUIColors.YELLOW_BACKGROUND));
