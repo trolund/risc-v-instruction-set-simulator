@@ -1,7 +1,6 @@
 import Core.ISASimulator;
 import IO.ProgramLoader;
 import picocli.CommandLine;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -28,7 +27,7 @@ public class RV32I implements Callable<Integer> {
     @CommandLine.Option(names = {"-e", "--ecall"}, description = "The register that 'ecall' uses to decide the kind of env call. default: a7.")
     private int ecall = 17;
 
-    @CommandLine.Option(names = {"-er", "--ecallreg"}, description = "The register that 'ecall' uses to decide the kind of env call. default: a0.")
+    @CommandLine.Option(names = {"-er", "--ecallreg"}, description = "The register that 'ecall' uses to as input. default: a0.")
     private int ecallReg = 10;
 
     @Override
