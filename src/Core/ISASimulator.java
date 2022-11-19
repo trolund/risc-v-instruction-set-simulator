@@ -30,17 +30,19 @@ public class ISASimulator {
     private boolean forceEnd = false;
     private int exitCode = 0;
     private String programName;
-    private int ecallReg = 17;
+    private int ecallAction = 17;
+    private int ecallArg = 10;
     private boolean exitPrint = false;
 
-    public ISASimulator(String programName, boolean printReg, boolean debug, boolean dumpData, int ecallReg, boolean exitPrint) {
+    public ISASimulator(String programName, boolean printReg, boolean debug, boolean dumpData, int ecallAction, int ecallArg, boolean exitPrint) {
         this.programName = programName;
         this.printReg = printReg;
         this.debug = debug;
         this.dumpData = dumpData;
         this.c = new TUIColors();
         this.dataDumper = new DataDumper();
-        this.ecallReg = ecallReg;
+        this.ecallAction = ecallAction;
+        this.ecallArg = ecallArg;
         this.exitPrint = exitPrint;
         // Reset machine and allocate space for reg and mem
         resetSim();
@@ -282,8 +284,8 @@ public class ISASimulator {
         // ecall https://github.com/mortbopet/Ripes/blob/master/docs/ecalls.md
         if (i.opcode == 0x73) {
             if (debug) System.out.println("ecall");
-            int action = reg[ecallReg];
-            int arg = reg[10];
+            int action = reg[ecallAction];
+            int arg = reg[ecallArg];
             if (action == 1) {
                 System.out.println(arg);
             } else if (action == 4) {

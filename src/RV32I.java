@@ -28,13 +28,16 @@ public class RV32I implements Callable<Integer> {
     @CommandLine.Option(names = {"-e", "--ecall"}, description = "The register that 'ecall' uses to decide the kind of env call. default: a7.")
     private int ecall = 17;
 
+    @CommandLine.Option(names = {"-er", "--ecallreg"}, description = "The register that 'ecall' uses to decide the kind of env call. default: a0.")
+    private int ecallReg = 10;
+
     @Override
     public Integer call() throws IOException {
         ProgramLoader loader = new ProgramLoader();
         File file = new File(System.getProperty("user.dir") + this.path);
         int[] progr = loader.readBinFile(file);
         Path fileName = file.toPath().getFileName();
-        ISASimulator vm = new ISASimulator(fileName.getFileName().toString(), print, debug, dump, ecall, result);
+        ISASimulator vm = new ISASimulator(fileName.getFileName().toString(), print, debug, dump, ecall, ecallReg, result);
         vm.runProgram(progr);
         return 0;
     }
