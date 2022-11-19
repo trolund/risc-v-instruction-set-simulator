@@ -285,7 +285,7 @@ public class ISASimulator {
             int action = reg[ecallReg];
             int arg = reg[10];
             if (action == 1) {
-                System.out.println(reg[10]);
+                System.out.println(arg);
             } else if (action == 4) {
                 int x = arg;
                 int ch = memory[x];
@@ -299,10 +299,10 @@ public class ISASimulator {
                 if (debug) System.out.println(c.colorText("ecall (exit): " + action, TUIColors.BLUE_BACKGROUND));
                 exit(0);
             } else if (action == 11) {
-                if (debug) System.out.println((char) reg[10]);
+                if (debug) System.out.println((char) arg);
             } else if (action == 17) {
                 if (debug) System.out.println(c.colorText("ecall: " + action, TUIColors.BLUE_BACKGROUND));
-                exit(reg[10]);
+                exit(arg);
             } else {
                 if (debug) System.out.println(c.colorText("Invalid ecall: " + action, TUIColors.YELLOW_BACKGROUND));
             }
@@ -463,14 +463,14 @@ public class ISASimulator {
         if ((i.funct3 == 0x5)) {
             if (debug) System.out.println("bge");
             if (reg[i.rs1] >= reg[i.rs2]) {
-                pc = pc + i.imm - 4;
+                pc += i.imm - 4;
                 return;
             }
         }
         //bltu instruction
         if ((i.funct3 == 0x6)) {
             if (debug) System.out.println("bltu");
-            if (reg[i.rs1] < reg[i.rs2]) {
+            if (unsignedValue(reg[i.rs1]) < unsignedValue(reg[i.rs2])) {
                 pc += i.imm - 4;
             }
             return;

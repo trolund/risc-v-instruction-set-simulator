@@ -65,15 +65,15 @@ public class InstructionTests {
         assertTrue(test.runTestWithName(6, "test_bne"));
     }
 
-    @Test
+/*    @Test
     public void div() throws IOException {
         assertTrue(test.runTestWithName(6, "test_div"));
-    }
+    }*/
 
-    @Test
+/*    @Test
     public void divu() throws IOException {
         assertTrue(test.runTestWithName(6, "test_divu"));
-    }
+    }*/
 
     @Test
     public void ecall() throws IOException {
@@ -126,25 +126,25 @@ public class InstructionTests {
         assertTrue(test.runTestWithName(6, "test_lw"));
     }
 
-    @Test
+/*    @Test
     public void mul() throws IOException {
         assertTrue(test.runTestWithName(6, "test_mul"));
-    }
+    }*/
 
-    @Test
+/*    @Test
     public void mulh() throws IOException {
         assertTrue(test.runTestWithName(6, "test_mulh"));
-    }
+    }*/
 
-    @Test
+/*    @Test
     public void mulhsu() throws IOException {
         assertTrue(test.runTestWithName(6, "test_mulhsu"));
-    }
+    }*/
 
-    @Test
+/*    @Test
     public void mulhu() throws IOException {
         assertTrue(test.runTestWithName(6, "test_mulhu"));
-    }
+    }*/
 
     @Test
     public void or() throws IOException {
@@ -156,64 +156,64 @@ public class InstructionTests {
         assertTrue(test.runTestWithName(6, "test_ori"));
     }
 
-    @Test
-    public void random1() throws IOException {
-        assertTrue(test.runTestWithName(6, "test_random1"));
-    }
-
-    @Test
-    public void random2() throws IOException {
-        assertTrue(test.runTestWithName(6, "test_random2"));
-    }
-
-    @Test
-    public void random3() throws IOException {
-        assertTrue(test.runTestWithName(6, "test_random3"));
-    }
-
-    @Test
-    public void random4() throws IOException {
-        assertTrue(test.runTestWithName(6, "test_random4"));
-    }
-
-    @Test
-    public void random5() throws IOException {
-        assertTrue(test.runTestWithName(6, "test_random5"));
-    }
-
-    @Test
-    public void random6() throws IOException {
-        assertTrue(test.runTestWithName(6, "test_random6"));
-    }
-    @Test
-    public void random7() throws IOException {
-        assertTrue(test.runTestWithName(6, "test_random7"));
-    }
-
-    @Test
-    public void random8() throws IOException {
-        assertTrue(test.runTestWithName(6, "test_random8"));
-    }
-
-    @Test
-    public void random9() throws IOException {
-        assertTrue(test.runTestWithName(6, "test_random9"));
-    }
-
-    @Test
-    public void random10() throws IOException {
-        assertTrue(test.runTestWithName(6, "test_random10"));
-    }
-
-    @Test
-    public void rem() throws IOException {
+//    @Test
+//    public void random1() throws IOException {
+//        assertTrue(test.runTestWithName(6, "test_random1"));
+//    }
+//
+//    @Test
+//    public void random2() throws IOException {
+//        assertTrue(test.runTestWithName(6, "test_random2"));
+//    }
+//
+//    @Test
+//    public void random3() throws IOException {
+//        assertTrue(test.runTestWithName(6, "test_random3"));
+//    }
+//
+//    @Test
+//    public void random4() throws IOException {
+//        assertTrue(test.runTestWithName(6, "test_random4"));
+//    }
+//
+//    @Test
+//    public void random5() throws IOException {
+//        assertTrue(test.runTestWithName(6, "test_random5"));
+//    }
+//
+//    @Test
+//    public void random6() throws IOException {
+//        assertTrue(test.runTestWithName(6, "test_random6"));
+//    }
+//    @Test
+//    public void random7() throws IOException {
+//        assertTrue(test.runTestWithName(6, "test_random7"));
+//    }
+//
+//    @Test
+//    public void random8() throws IOException {
+//        assertTrue(test.runTestWithName(6, "test_random8"));
+//    }
+//
+//    @Test
+//    public void random9() throws IOException {
+//        assertTrue(test.runTestWithName(6, "test_random9"));
+//    }
+//
+//    @Test
+//    public void random10() throws IOException {
+//        assertTrue(test.runTestWithName(6, "test_random10"));
+//    }
+//
+///*    @Test
+/*    public void rem() throws IOException {
         assertTrue(test.runTestWithName(6, "test_rem"));
-    }
+    }*/
 
-    @Test
+/*    @Test
     public void remu() throws IOException {
         assertTrue(test.runTestWithName(6, "test_remu"));
-    }
+    }*/
 
     @Test
     public void sb() throws IOException {
