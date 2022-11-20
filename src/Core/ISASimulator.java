@@ -33,6 +33,7 @@ public class ISASimulator {
     private int ecallAction = 17;
     private int ecallArg = 10;
     private boolean exitPrint = false;
+    private int pcInit = 0;
 
     public ISASimulator(String programName, boolean printReg, boolean debug, boolean dumpData, int ecallAction, int ecallArg, boolean exitPrint) {
         this.programName = programName;
@@ -73,7 +74,7 @@ public class ISASimulator {
     }
 
     private void resetSim() {
-        this.pc = 0;
+        this.pc = pcInit;
         this.memory = new int[0x100000]; // 1 mb // 0x100000
         this.reg = new int[32];
         this.reg[2] = 0; // SP = 0 at init
@@ -86,7 +87,7 @@ public class ISASimulator {
     }
 
     private void loadData(){
-        for (int i = 0; i < this.progr.length * 4; i = i + 4) {
+        for (int i = pcInit; i < this.progr.length * 4; i = i + 4) {
             // split into 4 times 8 bit
             int instr = progr[i >> 2];
             memory[i] = (instr & 0xFF);
