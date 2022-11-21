@@ -50,3 +50,9 @@ https://github.com/kvakil/venus/wiki/Environmental-Calls
 * ecallReg = 10
 
 https://github.com/mortbopet/Ripes/blob/master/docs/ecalls.md
+
+## Java version
+
+openjdk 18.0.2.1 2022-08-18
+OpenJDK Runtime Environment (build 18.0.2.1+1-1)
+OpenJDK 64-Bit Server VM (build 18.0.2.1+1-1, mixed mode, sharing)

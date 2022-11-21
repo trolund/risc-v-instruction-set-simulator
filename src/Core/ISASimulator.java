@@ -183,45 +183,21 @@ public class ISASimulator {
     }
 
     private void decodeInstr(int instr) throws Exception {
-        Instruction i = decoder.process(instr);
+        Instruction i = decoder.process(instr, debug);
         if (debug) System.out.println("Opcode: " + i.opcode);
         this.currInstr = instr;
         this.currInstrObj = i;
     }
 
     private void exeInstr(Instruction i) throws Exception {
-        // map the opcode to the right action's
-        switch (i.opcode) {
-            // type R
-            case 0x33 -> {
-                if (debug) System.out.println("type-R");
-                processR((R) i);
-            }
-            // type I
-            case 0x3, 0x13, 0x67, 0x73 -> {
-                if (debug) System.out.println("type-I");
-                processI((I) i);
-            }
-            // type U
-            case 0x37, 0x17 -> {
-                if (debug) System.out.println("type-U");
-                processU((U) i);
-            }
-            // type SB
-            case 0x63 -> {
-                if (debug) System.out.println("type-SB");
-                processSB((SB) i);
-            }
-            case 0x23 -> {
-                if (debug) System.out.println("type-S");
-                processS((S) i);
-            }
-            case 0x6F -> {  //UJ type
-                if (debug) System.out.println("type-UB");
-                processUJ((UJ) i);
-            }
-            default -> System.out.println(c.colorText("Opcode " + i.opcode + " not yet implemented 🛠😤", TUIColors.RED));
-        }
+            // map the opcode to the right action's
+            if(i instanceof R) processR((R) i);
+            else if (i instanceof I) processI((I) i);
+            else if (i instanceof U) processU((U) i);
+            else if (i instanceof SB) processSB((SB) i);
+            else if (i instanceof S) processS((S) i);
+            else if (i instanceof UJ) processUJ((UJ) i);
+            else System.out.println(c.colorText("Opcode " + i.opcode + " not yet implemented 🛠😤", TUIColors.RED));
     }
 
     private void processUJ(UJ i) {
@@ -470,7 +446,7 @@ public class ISASimulator {
                 return;
             }
         }
-        //bltu instruction
+        // bltu instruction
         if ((i.funct3 == 0x6)) {
             if (debug) System.out.println("bltu");
             if (unsignedValue(reg[i.rs1]) < unsignedValue(reg[i.rs2])) {
@@ -478,7 +454,7 @@ public class ISASimulator {
             }
             return;
         }
-        //bgeu instruction
+        // bgeu instruction
         if ((i.funct3 == 0x7)) {
             if (debug) System.out.println("bgeu");
             if (unsignedValue(reg[i.rs1]) >= unsignedValue(reg[i.rs2])) {

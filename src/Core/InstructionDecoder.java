@@ -10,11 +10,15 @@ import Instruction.UJ;
 
 public class InstructionDecoder {
 
-    public <T extends Instruction> T process(int instr) throws Exception {
-        return (T) process(instr, false);
+    public <T extends Instruction> T process(int instr, boolean debug) throws Exception {
+        return (T) mapInstruction(instr, debug);
     }
 
-    public Instruction process(int instr, boolean debug) throws Exception {
+    public <T extends Instruction> T process(int instr) throws Exception {
+        return (T) mapInstruction(instr, false);
+    }
+
+    private Instruction mapInstruction(int instr, boolean debug) throws Exception {
 
         int opcode = instr & 0x7f;
 
