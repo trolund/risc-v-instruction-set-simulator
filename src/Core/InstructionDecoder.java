@@ -19,9 +19,7 @@ public class InstructionDecoder {
     }
 
     private Instruction mapInstruction(int instr, boolean debug) throws Exception {
-
         int opcode = instr & 0x7f;
-
         switch (opcode) {
             //Format: R-type
             case 0x33 -> {
@@ -52,11 +50,8 @@ public class InstructionDecoder {
                 if (debug) System.out.println("Type: UJ-type");
                 return new UJ(instr);
             }
-            default -> {
-                throw new Exception("Type is not implemented (opcode: " + opcode + ")");
-            }
+            default -> throw new Exception("Type is not implemented (opcode: " + opcode + ")");
         }
-
 
     }
 }

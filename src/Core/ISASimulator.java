@@ -12,16 +12,21 @@ import jdk.jshell.spi.ExecutionControl;
 
 import java.io.IOException;
 
+/**
+ *  ISASimulator is the core of this ISA simulator. It contains the business logic of executing all instructions.
+ */
 public class ISASimulator {
 
-    private boolean printReg = false;
-    private boolean debug = false;
+    // state of the machine
     private int pc;
     private int[] reg;
     private int[] memory;
-    private int currInstr;
+
+
+
     private int[] progr;
-    private Instruction currInstrObj;
+    private boolean printReg = false;
+    private boolean debug = false;
     private InstructionDecoder decoder;
     private DataDumper dataDumper;
     private boolean dumpData;
@@ -51,10 +56,13 @@ public class ISASimulator {
     }
 
     public ISASimulator(String programName, boolean printReg, boolean debug, boolean dumpData) {
+        // config
         this.programName = programName;
         this.printReg = printReg;
         this.debug = debug;
         this.dumpData = dumpData;
+
+        // helpers
         this.c = new TUIColors();
         this.dataDumper = new DataDumper();
         // Reset machine and allocate space for reg and mem
@@ -76,8 +84,8 @@ public class ISASimulator {
     private void resetSim() {
         this.pc = pcInit;
         this.memory = new int[0x100000]; // 1 mb // 0x100000
-        this.reg = new int[32];
-        this.reg[2] = 0; // SP = 0 at init
+        this.reg = new int[32]; // the 32 integer regs.
+        this.reg[2] = 0; // sp = 0 at init
         this.decoder = new InstructionDecoder();
         this.instrCount = 0;
     }
@@ -101,14 +109,16 @@ public class ISASimulator {
         return  memory[i] |  memory[i + 1] << 8 | memory[i + 2] << 16 | memory[i + 3] << 24;
     }
 
-    private void fetchInstruction(){
+    private int fetchInstruction(){
         // fetch new instruction
-        currInstr = loadInstruction(pc);
+        int currInstr = loadInstruction(pc);
         // print instruction as hex if in debug mode
         if (debug) {
             String hex = Integer.toHexString(pc);
             System.out.println(c.colorText("PC Hex: (" + hex + "), PC: (" + (pc >> 2) + ") : " + Integer.toHexString(currInstr), TUIColors.YELLOW_UNDERLINED));
         }
+
+        return currInstr;
     }
 
     private void empty(){
@@ -127,9 +137,9 @@ public class ISASimulator {
             if(forceEnd){ break; }
 
             try {
-                fetchInstruction(); // 1. read the instructions from the memory
-                decodeInstr(currInstr); // 2. decode the instruction
-                exeInstr(currInstrObj); // 3. executes the instruction
+                int currInstr = fetchInstruction(); // 1. read the instructions from the memory
+                Instruction i = decodeInstr(currInstr); // 2. decode the instruction
+                exeInstr(i); // 3. executes the instruction
                 instrCount++;
                 reg[0] = 0; // keep 0x = zero
             } catch (Exception e) {
@@ -182,11 +192,10 @@ public class ISASimulator {
             System.out.println();
     }
 
-    private void decodeInstr(int instr) throws Exception {
+    private Instruction decodeInstr(int instr) throws Exception {
         Instruction i = decoder.process(instr, debug);
         if (debug) System.out.println("Opcode: " + i.opcode);
-        this.currInstr = instr;
-        this.currInstrObj = i;
+        return i;
     }
 
     private void exeInstr(Instruction i) throws Exception {
@@ -207,7 +216,7 @@ public class ISASimulator {
         pc = pc + i.imm - 4;
     }
 
-    private void processS(S i) {
+    private void processS(S i) throws ExecutionControl.NotImplementedException {
         //  sb instruction
         if((i.funct3 == 0x0)){
             if (debug) System.out.println("sb");
@@ -236,8 +245,10 @@ public class ISASimulator {
             memory[reg[i.rs1] + i.imm + 1] = ((reg[i.rs2] >> 8) & 0xFF);
             memory[reg[i.rs1] + i.imm + 2] = ((reg[i.rs2] >> 16) & 0xFF);
             memory[reg[i.rs1] + i.imm + 3] = ((reg[i.rs2] >> 24) & 0xFF);
+            return;
         }
 
+        throw new ExecutionControl.NotImplementedException(c.colorText("S-type instruction not implemented 🛠😤", TUIColors.RED));
     }
 
     private void processU(U i) throws ExecutionControl.NotImplementedException {
@@ -443,8 +454,9 @@ public class ISASimulator {
             if (debug) System.out.println("bge");
             if (reg[i.rs1] >= reg[i.rs2]) {
                 pc += i.imm - 4;
-                return;
+
             }
+            return;
         }
         // bltu instruction
         if ((i.funct3 == 0x6)) {
@@ -460,7 +472,10 @@ public class ISASimulator {
             if (unsignedValue(reg[i.rs1]) >= unsignedValue(reg[i.rs2])) {
                 pc = pc + i.imm - 4;
             }
+            return;
         }
+
+        throw new ExecutionControl.NotImplementedException(c.colorText("SB-type instruction not implemented 🛠😤", TUIColors.RED));
     }
 
     private void processR(R i) throws ExecutionControl.NotImplementedException {
