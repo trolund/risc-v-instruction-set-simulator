@@ -23,8 +23,6 @@ public class ISASimulator {
     private int[] memory;
 
 
-
-    private int[] progr;
     private boolean printReg = false;
     private boolean debug = false;
     private InstructionDecoder decoder;
@@ -94,8 +92,8 @@ public class ISASimulator {
         return reg;
     }
 
-    private void loadData(){
-        for (int i = pcInit; i < this.progr.length * 4; i = i + 4) {
+    private void loadData(int [] progr){
+        for (int i = pcInit; i < progr.length * 4; i = i + 4) {
             // split into 4 times 8 bit
             int instr = progr[i >> 2];
             memory[i] = (instr & 0xFF);
@@ -121,16 +119,15 @@ public class ISASimulator {
         return currInstr;
     }
 
-    private void empty(){
+    private void empty(int [] progr){
         if (debug && progr.length <= 0) {
             System.out.println(c.colorText("Empty program (∅ == 🪹)", TUIColors.YELLOW_BACKGROUND));
         }
     }
 
     public void runProgram(int[] progr) {
-        this.progr = progr;
-        empty(); // print if the program is empty - just for debugging
-        loadData(); // load the program into memory
+        empty(progr); // print if the program is empty - just for debugging
+        loadData(progr); // load the program into memory
 
 
         while (true) {
