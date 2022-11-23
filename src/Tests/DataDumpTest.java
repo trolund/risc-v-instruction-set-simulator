@@ -18,7 +18,7 @@ public class DataDumpTest {
     public void dataDumpString() throws IOException {
         String name = "string_dump";
 
-        ISASimulator vm = new ISASimulator(name, true, true, true);
+        ISASimulator vm = new ISASimulator(true, true, true);
 
         // test case
         File bin = loader.getFilesWithExFirst("TestPrograms/DUMP/", "string", "bin");
@@ -36,7 +36,7 @@ public class DataDumpTest {
     public void dataDumpLoop() throws IOException {
         String name = "loop_dump";
 
-        ISASimulator vm = new ISASimulator(name, true, true, true);
+        ISASimulator vm = new ISASimulator(true, true, true);
 
         // test case
         File bin = loader.getFilesWithExFirst("TestPrograms/DUMP/", "loop", "bin");

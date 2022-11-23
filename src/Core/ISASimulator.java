@@ -16,30 +16,32 @@ import java.io.IOException;
  *  ISASimulator is the core of this ISA simulator. It contains the business logic of executing all instructions.
  */
 public class ISASimulator {
+    // helpers
+    private InstructionDecoder decoder;
+    private DataDumper dataDumper;
+    private final TUIColors c;
 
     // state of the machine
     private int pc;
     private int[] reg;
     private int[] memory;
 
-
+    // config
     private boolean printReg = false;
     private boolean debug = false;
-    private InstructionDecoder decoder;
-    private DataDumper dataDumper;
     private boolean dumpData;
-    private final TUIColors c;
-    private int instrCount;
-    private boolean forceEnd = false;
-    private int exitCode = 0;
-    private String programName;
     private int ecallAction = 17;
     private int ecallArg = 10;
+
     private boolean exitPrint = false;
     private int pcInit = 0;
+    private int instrCount;
 
-    public ISASimulator(String programName, boolean printReg, boolean debug, boolean dumpData, int ecallAction, int ecallArg, boolean exitPrint) {
-        this.programName = programName;
+    // exit vars
+    private boolean forceEnd = false;
+    private int exitCode = 0;
+
+    public ISASimulator(boolean printReg, boolean debug, boolean dumpData, int ecallAction, int ecallArg, boolean exitPrint) {
         this.printReg = printReg;
         this.debug = debug;
         this.dumpData = dumpData;
@@ -53,9 +55,8 @@ public class ISASimulator {
         startUpPrint();
     }
 
-    public ISASimulator(String programName, boolean printReg, boolean debug, boolean dumpData) {
+    public ISASimulator(boolean printReg, boolean debug, boolean dumpData) {
         // config
-        this.programName = programName;
         this.printReg = printReg;
         this.debug = debug;
         this.dumpData = dumpData;
@@ -71,7 +72,6 @@ public class ISASimulator {
     public void startUpPrint(){
         // Start up print in terminal
         System.out.println(c.colorText("🛠 RISC-V Simulator started 🚀", TUIColors.BLUE_BACKGROUND));
-        if (!programName.isEmpty()) System.out.println(c.colorText("🏃 Running program : " + programName, TUIColors.PURPLE_BACKGROUND));
     }
 
     public ISASimulator() {
@@ -126,6 +126,11 @@ public class ISASimulator {
     }
 
     public void runProgram(int[] progr) {
+        runProgram(progr, "undefined");
+    }
+
+    public void runProgram(int[] progr, String programName) {
+        if (!programName.isEmpty()) System.out.println(c.colorText("🏃 Running program : " + programName, TUIColors.PURPLE_BACKGROUND));
         empty(progr); // print if the program is empty - just for debugging
         loadData(progr); // load the program into memory
 
@@ -157,13 +162,13 @@ public class ISASimulator {
         }
 
         exitPrint();
-        writeDump();
+        writeDump(programName);
     }
 
-    private void writeDump(){
+    private void writeDump(String programName){
         if(this.dumpData){
             try {
-                this.dataDumper.writeFile(this.programName, this.reg);
+                this.dataDumper.writeFile(programName, this.reg);
                 System.out.println(c.colorText("Data dump made", TUIColors.BLACK_BACKGROUND_BRIGHT));
             } catch (IOException e) {
                 System.out.println(c.colorText("Data dump failed", TUIColors.RED_BACKGROUND));

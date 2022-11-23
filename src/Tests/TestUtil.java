@@ -16,32 +16,32 @@ public class TestUtil {
     boolean runTestWithName(int task, String name, ISASimulator mashine) throws IOException {
         File bin = loader.getFilesWithExFirst("TestPrograms/BINARY/task" + task + "/", name, "bin");
         File res = loader.getFilesWithExFirst("TestPrograms/BINARY/task" + task + "/", name,"res");
-        return runTest(bin, res, mashine);
+        return runTest(bin, res, mashine, name);
     }
 
     boolean runTestWithName(int task, String name) throws IOException {
         File bin = loader.getFilesWithExFirst("TestPrograms/BINARY/task" + task + "/", name, "bin");
         File res = loader.getFilesWithExFirst("TestPrograms/BINARY/task" + task + "/", name,"res");
-        return runTest(bin, res, null);
+        return runTest(bin, res, null, name);
     }
 
     private String withOutExt(String s){
         return s.split("\\.")[0];
     }
 
-    private boolean runTest(File bin, File res, ISASimulator mashine) throws IOException {
+    private boolean runTest(File bin, File res, ISASimulator mashine, String name) throws IOException {
         ISASimulator vm;
         if(mashine == null){
-            vm = new ISASimulator(withOutExt(bin.getName()), true, true, false);
+            vm = new ISASimulator(true, true, false);
         }else {
             vm = mashine;
         }
 
-        System.out.println(bin.getName() + " == " +  res.getName());
+        System.out.println(color.colorText( "💡 Comparing output of " + bin.getName() + " with " + res.getName(), TUIColors.YELLOW_BACKGROUND));
 
         int[] program = loader.readBinFile(bin);
         // test case
-        vm.runProgram(program);
+        vm.runProgram(program, name);
 
         int[] reg = vm.getReg();
 
@@ -65,7 +65,7 @@ public class TestUtil {
 
         for (int i = 0; i < binaryFiles.length; i++) {
             File res = loader.findFileWithName(binaryFiles[i].getName(), resFiles);
-            boolean testResult = runTest(binaryFiles[i], res, null);
+            boolean testResult = runTest(binaryFiles[i], res, null, withOutExt(res.getName()));
             if(testResult) {
                 System.out.println("Correct ✅");
                 c++;

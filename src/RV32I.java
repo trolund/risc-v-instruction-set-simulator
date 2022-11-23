@@ -36,8 +36,8 @@ public class RV32I implements Callable<Integer> {
         File file = new File(System.getProperty("user.dir") + this.path);
         int[] progr = loader.readBinFile(file);
         Path fileName = file.toPath().getFileName();
-        ISASimulator vm = new ISASimulator(fileName.getFileName().toString(), print, debug, dump, ecall, ecallReg, result);
-        vm.runProgram(progr);
+        ISASimulator vm = new ISASimulator(print, debug, dump, ecall, ecallReg, result);
+        vm.runProgram(progr, fileName.getFileName().toString());
         return 0;
     }
 
