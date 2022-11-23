@@ -273,7 +273,7 @@ public class ISASimulator {
                     ch = memory[++x];
                 }
             } else if (action == 9) { // allocates a1 bytes on the heap, returns pointer to start in a7
-
+                    // throw new ExecutionControl.NotImplementedException("Heap allocation not implemented");
             } else if (action == 10) {
                 if (config.isDebug())
                     System.out.println(c.colorText("ecall (exit): " + action, TUIColors.BLUE_BACKGROUND));
