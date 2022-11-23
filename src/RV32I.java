@@ -13,22 +13,22 @@ public class RV32I implements Callable<Integer> {
     private String path;
 
     @CommandLine.Option(names = {"-p", "--print"}, description = "Will print the 32 registers to the console after each instruction. default: false.")
-    private boolean print = false;
+    private final boolean print = false;
 
     @CommandLine.Option(names = {"-d", "--debug"}, description = "Will do debug printing. default: false.")
-    private boolean debug = false;
+    private final boolean debug = false;
 
     @CommandLine.Option(names = {"-u", "--dump"}, description = "Write data-dump file after execution. default: false.")
-    private boolean dump = false;
+    private final boolean dump = false;
 
     @CommandLine.Option(names = {"-r", "--result"}, description = "Print the result of the 32 registers after execution. default: true.")
-    private boolean result = true;
+    private final boolean result = true;
 
     @CommandLine.Option(names = {"-e", "--ecall"}, description = "The register that 'ecall' uses to decide the kind of env call. default: a7.")
-    private int ecall = 17;
+    private final int ecall = 17;
 
     @CommandLine.Option(names = {"-er", "--ecallreg"}, description = "The register that 'ecall' uses to as input. default: a0.")
-    private int ecallReg = 10;
+    private final int ecallReg = 10;
 
     @Override
     public Integer call() throws IOException {

@@ -13,7 +13,7 @@ import jdk.jshell.spi.ExecutionControl;
 import java.io.IOException;
 
 /**
- *  ISASimulator is the core of this ISA simulator. It contains the business logic of executing all instructions.
+ * ISASimulator is the core of this ISA simulator. It contains the business logic of executing all instructions.
  */
 public class ISASimulator {
     // helpers
@@ -54,7 +54,7 @@ public class ISASimulator {
         startUpPrint();
     }
 
-    public void startUpPrint(){
+    public void startUpPrint() {
         // Start up print in terminal
         System.out.println(c.colorText("🛠 RISC-V Simulator started 🚀", TUIColors.BLUE_BACKGROUND));
     }
@@ -79,7 +79,7 @@ public class ISASimulator {
         return reg;
     }
 
-    private void loadData(int [] progr){
+    private void loadData(int[] progr) {
         for (int i = 0; i < progr.length * 4; i = i + 4) {
             // split into 4 times 8 bit
             int instr = progr[i >> 2];
@@ -90,11 +90,11 @@ public class ISASimulator {
         }
     }
 
-    private int loadInstruction(int i){
-        return  memory[i] |  memory[i + 1] << 8 | memory[i + 2] << 16 | memory[i + 3] << 24;
+    private int loadInstruction(int i) {
+        return memory[i] | memory[i + 1] << 8 | memory[i + 2] << 16 | memory[i + 3] << 24;
     }
 
-    private int fetchInstruction(){
+    private int fetchInstruction() {
         // fetch new instruction
         int currInstr = loadInstruction(pc);
         // print instruction as hex if in debug mode
@@ -106,7 +106,7 @@ public class ISASimulator {
         return currInstr;
     }
 
-    private void empty(int [] progr){
+    private void empty(int[] progr) {
         if (config.isDebug() && progr.length <= 0) {
             System.out.println(c.colorText("Empty program (∅ == 🪹)", TUIColors.YELLOW_BACKGROUND));
         }
@@ -117,23 +117,19 @@ public class ISASimulator {
     }
 
     public void runProgram(int[] progr, String programName) {
-        if (!programName.isEmpty()) System.out.println(c.colorText("🏃 Running program : " + programName, TUIColors.PURPLE_BACKGROUND));
+        if (!programName.isEmpty())
+            System.out.println(c.colorText("🏃 Running program : " + programName, TUIColors.PURPLE_BACKGROUND));
         empty(progr); // print if the program is empty - just for debugging
         loadData(progr); // load the program into memory
 
-
-        while (true) {
-            if(forceEnd){ break; }
-
+        while (!forceEnd) {
             try {
                 int currInstr = fetchInstruction(); // 1. read the instructions from the memory
                 Instruction i = decodeInstr(currInstr); // 2. decode the instruction
                 exeInstr(i); // 3. executes the instruction
-                instrCount++;
-                reg[0] = 0; // keep 0x = zero
             } catch (Exception e) {
                 e.printStackTrace();
-                exit(99);
+                exit(99); // exit program in case of an error
             }
 
             pc += 4; // One instruction is four bytes (32 bit) -> move program counter to next instruction 🛠
@@ -148,12 +144,12 @@ public class ISASimulator {
             }
         }
 
-        exitPrint();
-        writeDump(programName);
+        exitPrint(); // print to console
+        writeDump(programName); // write dump to file
     }
 
-    private void writeDump(String programName){
-        if(config.isDumpData()){
+    private void writeDump(String programName) {
+        if (config.isDumpData()) {
             try {
                 this.dataDumper.writeFile(programName, this.reg);
                 System.out.println(c.colorText("Data dump made", TUIColors.BLACK_BACKGROUND_BRIGHT));
@@ -168,17 +164,19 @@ public class ISASimulator {
         forceEnd = true;
         this.exitCode = exitCode;
     }
+
     private void exitPrint() {
         System.out.println(c.colorText("Program exit with code: " + exitCode, TUIColors.CYAN));
         if (config.isExitPrint() && !config.isDebug()) printRegState();
-        if(config.isDebug()) System.out.println(c.colorText("Executed " + instrCount + " instructions", TUIColors.CYAN_BACKGROUND));
+        if (config.isDebug())
+            System.out.println(c.colorText("Executed " + instrCount + " instructions", TUIColors.CYAN_BACKGROUND));
     }
 
     private void printRegState() {
-            for (int i : reg) {
-                System.out.print(c.colorText(i + " ", TUIColors.PURPLE_BACKGROUND));
-            }
-            System.out.println();
+        for (int i : reg) {
+            System.out.print(c.colorText(i + " ", TUIColors.PURPLE_BACKGROUND));
+        }
+        System.out.println();
     }
 
     private Instruction decodeInstr(int instr) throws Exception {
@@ -188,14 +186,16 @@ public class ISASimulator {
     }
 
     private void exeInstr(Instruction i) throws Exception {
-            // map the opcode to the right action's
-            if(i instanceof R) processR((R) i);
-            else if (i instanceof I) processI((I) i);
-            else if (i instanceof U) processU((U) i);
-            else if (i instanceof SB) processSB((SB) i);
-            else if (i instanceof S) processS((S) i);
-            else if (i instanceof UJ) processUJ((UJ) i);
-            else System.out.println(c.colorText("Opcode " + i.opcode + " not yet implemented 🛠😤", TUIColors.RED));
+        // map the opcode to the right action's
+        if (i instanceof R) processR((R) i);
+        else if (i instanceof I) processI((I) i);
+        else if (i instanceof U) processU((U) i);
+        else if (i instanceof SB) processSB((SB) i);
+        else if (i instanceof S) processS((S) i);
+        else if (i instanceof UJ) processUJ((UJ) i);
+        else System.out.println(c.colorText("Opcode " + i.opcode + " not yet implemented 🛠😤", TUIColors.RED));
+        reg[0] = 0; // keep 0x = zero
+        instrCount++;
     }
 
     private void processUJ(UJ i) {
@@ -207,7 +207,7 @@ public class ISASimulator {
 
     private void processS(S i) throws ExecutionControl.NotImplementedException {
         //  sb instruction
-        if((i.funct3 == 0x0)){
+        if ((i.funct3 == 0x0)) {
             if (config.isDebug()) System.out.println("sb");
             // Store 8-bit, values from the low bits of register rs2 to memory.
             // imm = offset
@@ -215,7 +215,7 @@ public class ISASimulator {
             return;
         }
         //  sh instruction
-        if((i.funct3 == 0x1)){
+        if ((i.funct3 == 0x1)) {
             if (config.isDebug()) System.out.println("sh");
             // Store 16-bit, values from the low bits of register rs2 to memory
             // imm = offset
@@ -225,7 +225,7 @@ public class ISASimulator {
             return;
         }
         //  sw instruction
-        if((i.funct3 == 0x2)){
+        if ((i.funct3 == 0x2)) {
             if (config.isDebug()) System.out.println("sw");
             // Store 32-bit, values from the low bits of register rs2 to memory.
             // imm = offset
@@ -268,14 +268,15 @@ public class ISASimulator {
             } else if (action == 4) {
                 int x = arg;
                 int ch = memory[x];
-                while(ch != 0x00){
+                while (ch != 0x00) {
                     System.out.println((char) ch);
                     ch = memory[++x];
                 }
             } else if (action == 9) { // allocates a1 bytes on the heap, returns pointer to start in a7
 
             } else if (action == 10) {
-                if (config.isDebug()) System.out.println(c.colorText("ecall (exit): " + action, TUIColors.BLUE_BACKGROUND));
+                if (config.isDebug())
+                    System.out.println(c.colorText("ecall (exit): " + action, TUIColors.BLUE_BACKGROUND));
                 exit(0);
             } else if (action == 11) {
                 if (config.isDebug()) System.out.println((char) arg);
@@ -283,7 +284,8 @@ public class ISASimulator {
                 if (config.isDebug()) System.out.println(c.colorText("ecall: " + action, TUIColors.BLUE_BACKGROUND));
                 exit(arg);
             } else {
-                if (config.isDebug()) System.out.println(c.colorText("Invalid ecall: " + action, TUIColors.YELLOW_BACKGROUND));
+                if (config.isDebug())
+                    System.out.println(c.colorText("Invalid ecall: " + action, TUIColors.YELLOW_BACKGROUND));
             }
             return;
         }
@@ -306,8 +308,7 @@ public class ISASimulator {
                 if ((memory[reg[i.rs1] + i.imm]) >> 7 == 1) // should be sign extend (negative value)
                     reg[i.rd] = sext((memory[reg[i.rs1] + i.imm]), 8);
                 else {
-                    int res = (memory[reg[i.rs1] + i.imm]);
-                    reg[i.rd] = res;
+                    reg[i.rd] = (memory[reg[i.rs1] + i.imm]);
                 }
                 return;
             }
