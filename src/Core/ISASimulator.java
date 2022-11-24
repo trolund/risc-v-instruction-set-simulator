@@ -24,7 +24,7 @@ public class ISASimulator {
     // state of the machine
     private int pc;
     private int[] reg;
-    private int[] memory;
+    private byte[] memory;
 
     // config
     private final Config config;
@@ -68,7 +68,7 @@ public class ISASimulator {
 
     private void resetSim() {
         this.pc = 0;
-        this.memory = new int[0x100000]; // 1 mb // 0x100000
+        this.memory = new byte[0x100000]; // 1 mb // 0x100000
         this.reg = new int[32]; // the 32 integer regs.
         this.reg[2] = 0; // sp = 0 at init
         this.decoder = new InstructionDecoder();
@@ -83,15 +83,15 @@ public class ISASimulator {
         for (int i = 0; i < progr.length * 4; i = i + 4) {
             // split into 4 times 8 bit
             int instr = progr[i >> 2];
-            memory[i] = (instr & 0xFF);
-            memory[i + 1] = ((instr >> 8) & 0xFF);
-            memory[i + 2] = ((instr >> 16) & 0xFF);
-            memory[i + 3] = ((instr >> 24) & 0xFF);
+            memory[i] = (byte) (instr & 0xFF);
+            memory[i + 1] = (byte) ((instr >> 8) & 0xFF);
+            memory[i + 2] = (byte) ((instr >> 16) & 0xFF);
+            memory[i + 3] = (byte) ((instr >> 24) & 0xFF);
         }
     }
 
     private int loadInstruction(int i) {
-        return memory[i] | memory[i + 1] << 8 | memory[i + 2] << 16 | memory[i + 3] << 24;
+        return unsignedToBytes(memory[i]) | (unsignedToBytes(memory[i + 1]) << 8) | (unsignedToBytes(memory[i + 2]) << 16) | (unsignedToBytes(memory[i + 3]) << 24);
     }
 
     private int fetchInstruction() {
@@ -211,7 +211,7 @@ public class ISASimulator {
             if (config.isDebug()) System.out.println("sb");
             // Store 8-bit, values from the low bits of register rs2 to memory.
             // imm = offset
-            memory[reg[i.rs1] + i.imm] = reg[i.rs2] & 0xFF;
+            memory[reg[i.rs1] + i.imm] = (byte) (reg[i.rs2] & 0xFF);
             return;
         }
         //  sh instruction
@@ -220,8 +220,8 @@ public class ISASimulator {
             // Store 16-bit, values from the low bits of register rs2 to memory
             // imm = offset
             // split into 2 times 8 bit
-            memory[reg[i.rs1] + i.imm] = (reg[i.rs2] & 0xFF);
-            memory[reg[i.rs1] + i.imm + 1] = ((reg[i.rs2] >> 8) & 0xFF);
+            memory[reg[i.rs1] + i.imm] = (byte) (reg[i.rs2] & 0xFF);
+            memory[reg[i.rs1] + i.imm + 1] = (byte) ((reg[i.rs2] >> 8) & 0xFF);
             return;
         }
         //  sw instruction
@@ -230,10 +230,10 @@ public class ISASimulator {
             // Store 32-bit, values from the low bits of register rs2 to memory.
             // imm = offset
             // split into 4 times 8 bit
-            memory[reg[i.rs1] + i.imm] = (reg[i.rs2] & 0xFF);
-            memory[reg[i.rs1] + i.imm + 1] = ((reg[i.rs2] >> 8) & 0xFF);
-            memory[reg[i.rs1] + i.imm + 2] = ((reg[i.rs2] >> 16) & 0xFF);
-            memory[reg[i.rs1] + i.imm + 3] = ((reg[i.rs2] >> 24) & 0xFF);
+            memory[reg[i.rs1] + i.imm] = (byte) (reg[i.rs2] & 0xFF);
+            memory[reg[i.rs1] + i.imm + 1] = (byte) ((reg[i.rs2] >> 8) & 0xFF);
+            memory[reg[i.rs1] + i.imm + 2] = (byte) ((reg[i.rs2] >> 16) & 0xFF);
+            memory[reg[i.rs1] + i.imm + 3] = (byte) ((reg[i.rs2] >> 24) & 0xFF);
             return;
         }
 
@@ -305,17 +305,15 @@ public class ISASimulator {
             //  lb
             if (i.funct3 == 0x0) {
                 if (config.isDebug()) System.out.println("lb");
-                if ((memory[reg[i.rs1] + i.imm]) >> 7 == 1) // should be sign extend (negative value)
-                    reg[i.rd] = sext((memory[reg[i.rs1] + i.imm]), 8);
-                else {
-                    reg[i.rd] = (memory[reg[i.rs1] + i.imm]);
-                }
+                int result = unsignedToBytes(memory[reg[i.rs1] + i.imm]);
+                if ((result & 0x80) > 0) result = sext(result, 8);
+                reg[i.rd] = result;
                 return;
             }
             //  lh
             if (i.funct3 == 0x1) {
                 if (config.isDebug()) System.out.println("lh");
-                int result = memory[reg[i.rs1] + i.imm] | ((memory[reg[i.rs1] + i.imm + 1]) << 8);
+                int result = unsignedToBytes(memory[reg[i.rs1] + i.imm]) | (unsignedToBytes(memory[reg[i.rs1] + i.imm + 1]) << 8);
                 if ((result & 0x8000) > 0) result = sext(result, 16);
                 reg[i.rd] = result;
 
@@ -324,25 +322,25 @@ public class ISASimulator {
             //  lw
             if (i.funct3 == 0x2) {
                 if (config.isDebug()) System.out.println("lw");
-                reg[i.rd] = (memory[reg[i.rs1] + i.imm]) | ((memory[reg[i.rs1] + i.imm + 1]) << 8) | ((memory[reg[i.rs1] + i.imm + 2]) << 16) | ((memory[reg[i.rs1] + i.imm + 3]) << 24);
+                reg[i.rd] = unsignedToBytes(memory[reg[i.rs1] + i.imm]) | (unsignedToBytes(memory[reg[i.rs1] + i.imm + 1]) << 8) | (unsignedToBytes(memory[reg[i.rs1] + i.imm + 2]) << 16) | (unsignedToBytes(memory[reg[i.rs1] + i.imm + 3]) << 24);
                 return;
             }
             //  ld
             if (i.funct3 == 0x3) {
                 if (config.isDebug()) System.out.println("ld");
-                reg[i.rd] = memory[reg[i.rs1] + i.imm];
+                reg[i.rd] = unsignedToBytes(memory[reg[i.rs1] + i.imm]);
                 return;
             }
             // lbu
             if (i.funct3 == 0x4) {
                 if (config.isDebug()) System.out.println("lbu");
-                reg[i.rd] = (int) unsignedValue(memory[reg[i.rs1] + i.imm]);
+                reg[i.rd] = (int) unsignedValue(unsignedToBytes(memory[reg[i.rs1] + i.imm]));
                 return;
             }
             // lhu
             if (i.funct3 == 0x5) {
                 if (config.isDebug()) System.out.println("lhu");
-                int result = (memory[reg[i.rs1] + i.imm]) | ((memory[reg[i.rs1] + i.imm + 1]) << 8);
+                int result = unsignedToBytes(memory[reg[i.rs1] + i.imm]) | (unsignedToBytes(memory[reg[i.rs1] + i.imm + 1]) << 8);
                 reg[i.rd] = (int) unsignedValue(result);
                 return;
             }
@@ -540,6 +538,10 @@ public class ISASimulator {
     private int sext(int val, int bits) {
         int shift = 32 - bits;
         return val << shift >> shift;
+    }
+
+    private static int unsignedToBytes(byte b) {
+        return b & 0xFF;
     }
 
 }
