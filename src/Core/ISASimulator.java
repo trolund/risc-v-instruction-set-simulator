@@ -340,13 +340,6 @@ public class ISASimulator {
                 reg[i.rd] = (int) unsignedValue(result);
                 return;
             }
-            // lwu
-            if (i.funct3 == 0x6) {
-                if (config.isDebug()) System.out.println("lwu");
-                int result = (memory[reg[i.rs1] + i.imm]) | ((memory[reg[i.rs1] + i.imm + 1]) << 8) | ((memory[reg[i.rs1] + i.imm + 2]) << 16) | ((memory[reg[i.rs1] + i.imm + 3]) << 24);
-                reg[i.rd] = (int) unsignedValue(result);
-                return;
-            }
         }
         if (i.opcode == 0x13) {
             // addi
@@ -536,7 +529,7 @@ public class ISASimulator {
         return val << shift >> shift;
     }
 
-    private static int unsignedToBytes(byte b) {
+    private int unsignedToBytes(byte b) {
         return b & 0xFF;
     }
 
