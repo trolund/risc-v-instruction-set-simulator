@@ -322,13 +322,9 @@ public class ISASimulator {
             //  lw
             if (i.funct3 == 0x2) {
                 if (config.isDebug()) System.out.println("lw");
-                reg[i.rd] = unsignedToBytes(memory[reg[i.rs1] + i.imm]) | (unsignedToBytes(memory[reg[i.rs1] + i.imm + 1]) << 8) | (unsignedToBytes(memory[reg[i.rs1] + i.imm + 2]) << 16) | (unsignedToBytes(memory[reg[i.rs1] + i.imm + 3]) << 24);
-                return;
-            }
-            //  ld
-            if (i.funct3 == 0x3) {
-                if (config.isDebug()) System.out.println("ld");
-                reg[i.rd] = unsignedToBytes(memory[reg[i.rs1] + i.imm]);
+                int result = reg[i.rd] = unsignedToBytes(memory[reg[i.rs1] + i.imm]) | (unsignedToBytes(memory[reg[i.rs1] + i.imm + 1]) << 8) | (unsignedToBytes(memory[reg[i.rs1] + i.imm + 2]) << 16) | (unsignedToBytes(memory[reg[i.rs1] + i.imm + 3]) << 24);
+                if ((result & 0x800000) > 0) result = sext(result, 32);
+                reg[i.rd] = result;
                 return;
             }
             // lbu
