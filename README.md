@@ -56,3 +56,41 @@ https://github.com/mortbopet/Ripes/blob/master/docs/ecalls.md
 openjdk 18.0.2.1 2022-08-18
 OpenJDK Runtime Environment (build 18.0.2.1+1-1)
 OpenJDK 64-Bit Server VM (build 18.0.2.1+1-1, mixed mode, sharing)
+
+## Test cases
+
+| Test   cases  |            | ✅/❌️ |
+|---------------|------------|------|
+| Task 1        |            | ✅    |
+|               | addneg     | ✅    |
+|               | addpos     | ✅    |
+|               | addlarge   | ✅    |
+|               | shift2     | ✅    |
+|               | set        | ✅    |
+|               | bool       | ✅    |
+|               | shift      | ✅    |
+| Task 2        |            | ✅    |
+|               | branchcnt  | ✅    |
+|               | branchmany | ✅    |
+|               | branchtrap | ✅    |
+| Task 3        |            | ✅    |
+|               | string     | ✅    |
+|               | loop       | ✅    |
+|               | width      | ✅    |
+|               | recursive  | ✅    |
+| Task 4        |            | ✅    |
+|               | t1         | ✅    |
+|               | t2         | ✅    |
+|               | t3         | ✅    |
+|               | t4         | ✅    |
+|               | t5         | ✅    |
+|               | t6         | ✅    |
+|               | t7         | ✅    |
+|               | t8         | ✅    |
+|               | t9         | ✅    |
+|               | t10        | ✅    |
+|               | t11        | ✅    |
+|               | t12        | ✅    |
+|               | t13        | ✅    |
+|               | t14        | ✅    |
+|               | t15        | ✅    |
