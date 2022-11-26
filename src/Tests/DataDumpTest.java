@@ -11,7 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class DataDumpTest {
 
-    private final TestUtil test = new TestUtil();
     private final ProgramLoader loader = new ProgramLoader();
 
     @Test
