@@ -1,14 +1,16 @@
 # InstructionSetSimulator
 
-RISC-V simulator implementing the RV32I Instructions.
+A basic RISC-V simulator, implementing the RV32I Instructions.
 
-The project is done as part of the course 02155 Computer Architecture and Engineering at DTU.
+The project was done as part of the course 02155 Computer Architecture and Engineering at DTU.
+
+course website: https://courses.compute.dtu.dk/02155/
 
 RV32I Instructions info:
-https://msyksphinz-self.github.io/riscv-isadoc/html/rvi.html#lbu
-https://itnext.io/risc-v-instruction-set-cheatsheet-70961b4bbe8
+* https://msyksphinz-self.github.io/riscv-isadoc/html/rvi.html#lbu
+* https://itnext.io/risc-v-instruction-set-cheatsheet-70961b4bbe8
 
-## RV32I usage
+## RV32I CLI usage
 
 The CLI can be used by using the compiled jar file *rv32i.jar* like this: 
 
