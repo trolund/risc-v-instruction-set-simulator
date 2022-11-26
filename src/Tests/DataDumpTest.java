@@ -16,13 +16,13 @@ public class DataDumpTest {
 
     @Test
     public void dataDumpString() throws IOException {
-        String name = "string_dump";
+        String name = "string";
 
         ISASimulator vm = new ISASimulator(true, true, true);
 
         // test case
         File bin = loader.getFilesWithExFirst("TestPrograms/DUMP/", "string", "bin");
-        vm.runProgram(loader.readBinFile(bin));
+        vm.runProgram(loader.readBinFile(bin), name);
 
         int[] dumpReg = loader.readBinFile(new File("dump/" + name + ".res"));
 
@@ -34,13 +34,13 @@ public class DataDumpTest {
 
     @Test
     public void dataDumpLoop() throws IOException {
-        String name = "loop_dump";
+        String name = "loop";
 
         ISASimulator vm = new ISASimulator(true, true, true);
 
         // test case
         File bin = loader.getFilesWithExFirst("TestPrograms/DUMP/", "loop", "bin");
-        vm.runProgram(loader.readBinFile(bin));
+        vm.runProgram(loader.readBinFile(bin), name);
 
         int[] dumpReg = loader.readBinFile(new File("dump/" + name + ".res"));
 

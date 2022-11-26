@@ -9,10 +9,10 @@ import java.sql.Timestamp;
 public class DataDumper {
 
     public void writeFile(String name, int[] reg) throws IOException {
-        File outputFile = new File(getName(name));
-        //Path pathToFile = Paths.get(getName(name));
-        // ((System.out.println(pathToFile.toAbsolutePath());
-        //Files.write(outputFile.toPath(), toByte(reg));
+        File dir = new File("dump/");
+        if (!dir.exists()){
+            dir.mkdirs();
+        }
 
         DataOutputStream os = new DataOutputStream(new FileOutputStream(getName(name)));
 
