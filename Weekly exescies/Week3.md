@@ -21,35 +21,6 @@ for(i=0; i<a; i++)
            D[4*j] = i + j;
 ```
 
-### my solution
-
-    outer:
-        bge x7, x5, end            // if rs1 ≥ rs2 jump to end     
-        
-    --- scope of outer loop ---
-
-    inner:
-        bge x29, x6, outer         // if rs1 ≥ rs2 jump to outer
-
-    --- scope of inner loop ---
-
-        add x28 x7 x29             // i + j
-        addi x31, x31, 4           // load 4
-        mul x31, x31, x29          // 4*j
-
-        slli x31, x31, 3           // multiply by 8 to get byte offset
-        
-        sd x28, 0(x31)
-
-        addi x29, x29, 1          // increment j
-        j inner                   // continue loop
-
-        addi x7, x7, 1            // increment i
-        j outer                   // continue loop
-    end:
-
-### book solution
-
 Answer:
 
 ![Alt text](../Test%20exsams/img/Screenshot%202022-11-26%20at%2019.39.52.png)
