@@ -63,6 +63,8 @@ Assume 185 and 122 are signed 8-bit decimal integers stored in sign-magnitude fo
 
 ![Alt text](../Test%20exsams/img/Figure%203.6.png)
 
+![Alt text](../Test%20exsams/img/fig.3.3.png)
+
 Using a table similar to that shown in Figure 3.6, calculate the product of the octal unsigned 6-bit integers 62 and 12 using the hardware described in Figure 3.3. You should show the contents of each register on each step.
 
 ## 3.13 ?? 
@@ -71,13 +73,49 @@ Using a table similar to that shown in Figure 3.6, calculate the product of the 
 
 ## 3.22 ?? 
 
-What decimal number does the bit pattern 0 × 0C000000
+What decimal number does the bit pattern 0×0C000000
 represent if it is a floating point number? Use the IEEE 754 standard.
 
+Use these pages:
 
-## 3.23 ?? 
+* https://babbage.cs.qc.cuny.edu/ieee-754.old/32bit.html
+* https://gregstoll.com/~gregstoll/floattohex/
+
+0×0C000000 =
+<=> 0000 1100 0000 0000 0000 0000 0000 0000 
+<=> 0 0001 1000 0000 0000 0000 0000 0000 000
+
+sign is positive
+exp = 0 × 18 = 24 − 127 = −103
+
+gregstoll result: +1 * 2^(24 - 127) * 1 = 1 × 2^−103
+
+there is a hidden 1 mantissa = 0 answer = 1.0 × 2^−103
+
+## 3.23
 
 Write down the binary representation of the decimal number 63.25 assuming the IEEE 754 single precision format.
+
+Use (float to hex):
+
+* https://gregstoll.com/~gregstoll/floattohex/
+
+Use (dec to hex):
+* https://www.rapidtables.com/convert/number/decimal-to-binary.html
+
+    will give: 111111.01
+    (63.25)_10 = (3F.4)_6
+
+63.25 × 100 = 111111.01 × 20
+
+normalize, move binary point 5 to the left, 1.1111101 × 25
+
+sign = positive (0), exp = 127 + 5 = 132
+
+Final bit pattern: 
+<=> 0 1000 0100 1111 1010 0000 0000 0000 000 
+<=> 0100 0010 0111 1101 0000 0000 0000 0000 
+<=> 0x427D0000
 
 ## 3.30 ?? 
 
