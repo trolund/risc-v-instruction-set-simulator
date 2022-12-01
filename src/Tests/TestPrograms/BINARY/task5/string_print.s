@@ -1,6 +1,6 @@
 LOOP:
-        lw x10, 0(x13)
-        lw x11, 8(x13)
-        add x12, x10, x11
-        subi x13, x13, 16
-        bnez x12, LOOP
+    lw x3, 0(x2)
+    and x7, x3, x5
+    slt x1, x6, x3
+    addi x2, x2, -4
+    bne x2, x0, LOOP

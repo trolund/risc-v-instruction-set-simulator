@@ -177,6 +177,12 @@ public class ISASimulator {
             System.out.print(c.colorText(i + " ", TUIColors.PURPLE_BACKGROUND));
         }
         System.out.println();
+
+        System.out.println("HEX:");
+        for (int i : reg) {
+            System.out.print(c.colorText(Integer.toHexString(i) + " ", TUIColors.PURPLE_BACKGROUND));
+        }
+        System.out.println();
     }
 
     private Instruction decodeInstr(int instr) throws Exception {

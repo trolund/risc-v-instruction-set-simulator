@@ -18,6 +18,8 @@
 
 ![Alt text](../Test%20exsams/img/fp.png)
 
+VIDEO: https://www.youtube.com/watch?v=RuKkePyo9zk
+
 ## 3.6
 
 Assume 185 and 122 are unsigned 8-bit decimal integers. Calculate 185–122. Is there overflow, underflow, or neither?
@@ -119,4 +121,9 @@ Final bit pattern:
 
 ## 3.30 ?? 
 
-Calculate the product of –8.0546875 × 10^0 and −1.79931640625 × 10^–1 by hand, assuming A and B are stored in the 16-bit half-precision format described in Exercise 3.27. Assume 1 guard, 1 round bit, and 1 sticky bit, and round to the nearest even. Show all the steps; however, as is done in the example in the text, you can do the multiplication in human-readable format instead of using the techniques described in Exercises 3.12 through 3.14. Indicate if there is overflow or underflow. Write your answer in both the 16-bit floating-point format described in Exercise 3.27 and also as a decimal number. How accurate is your result? How does it compare to the number you get if you do the multiplication on a calculator?
+Calculate the product of –8.0546875 × 10^0 and −1.79931640625 × 10^–1 by hand, assuming A and B are stored in the 16-bit half-precision format described in Exercise 3.27. 
+
+Assume 1 guard, 1 round bit, and 1 sticky bit, and round to the nearest even. Show all the steps; however, as is done in the example in the text, you can do the multiplication in human-readable format instead of using the techniques described in Exercises 3.12 through 3.14. Indicate if there is overflow or underflow. Write your answer in both the 16-bit floating-point format described in Exercise 3.27 and also as a decimal number. How accurate is your result? How does it compare to the number you get if you do the multiplication on a calculator?
+
+–8.0546875 × 10^0 = -1000.10000101100000111011      
+−1.79931640625 × 10^–1
