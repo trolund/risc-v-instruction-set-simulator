@@ -460,7 +460,7 @@ public class ISASimulator {
 
         throw new ExecutionControl.NotImplementedException(c.colorText("SB-type instruction not implemented 🛠😤", TUIColors.RED));
     }
-    
+
     private void processR(R i) throws ExecutionControl.NotImplementedException {
         // add
         if (i.funct3 == 0x00 && i.funct7 == 0x00) {
