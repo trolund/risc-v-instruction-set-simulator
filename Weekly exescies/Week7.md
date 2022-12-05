@@ -1,5 +1,5 @@
-# Week 6
+# Week 7
 
     Suggested exercises:
-    4.28, 4.30.   
+   
 
