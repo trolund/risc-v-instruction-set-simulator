@@ -1,6 +1,9 @@
-LOOP:
-    lw x3, 0(x2)
-    and x7, x3, x5
-    slt x1, x6, x3
-    addi x2, x2, -4
-    bne x2, x0, LOOP
+	add  x3, x0, x0
+	beq  x1, x0, skip
+	sub  x6, x5, x7
+	add  x2, x5, x6
+skip:	lw   x9, 0(x5)
+	addi x4, x9, 40
+	add  x8, x5, x7
+	addi x3, x8, -1
+	sub  x7, x5, x8
