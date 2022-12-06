@@ -73,7 +73,7 @@ The cache after reads:
 ### 5.2.2 For each of these references, identify the binary word address, the tag, the index, and the offset given a direct-mapped cache with two-word blocks and a total size of eight blocks. Also list if each reference is a hit or a miss, assuming the cache is initially empty.
 
 two words in block = 1 bit for offset (2^1 = 2).
-16 blocks in cache = 3 bits for index (2^3 = 8).
+8 blocks in cache = 3 bits for index (2^3 = 8).
 32 - 3 = 29 bits for tag.
 
 | addr            | tag | index | offset | M/H |
