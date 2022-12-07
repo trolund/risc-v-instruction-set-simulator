@@ -166,3 +166,26 @@ time is 25 cycles, and C1 has an access time of 2 cycles, C2 takes 3 cycles, and
 the cache.) 
 
 ![Alt text](../Test%20exsams/img/Screenshot%202022-12-05%20at%2021.27.35.png)
+
+## 5.3 
+
+By convention, a cache is named according to the amount of data it contains (i.e., a 4 KiB cache can hold 4 KiB of data); however, caches also require SRAM to store metadata such as tags and valid bits. 
+
+For this exercise, you will examine how a cache’s configuration affects the total amount of SRAM needed to implement it as well as the performance of the cache. For all parts, assume that the caches are direct-mapped, byte addressable, and that addresses and the words are 32 bits.
+
+### 5.3.1 Calculate the total number of bits required to implement a 32 KiB cache with two-word blocks.
+
+Each word is 8 bytes; each block contains two words; thus, each block contains 16 = 2^4 bytes.
+
+The cache contains 32KiB = 2^15 bytes of data. Thus, it has 2^15/2^4 = 2^11 lines of data.
+
+Each 64-bit address is divided into: (1) a 3-bit word offset, (2) a 1-bit block offset, (3) an 11-bit index (because there are 2^11 lines), and (4) a 49-bit tag (64 − 3 − 1 −11=49).
+
+The cache is composed of: 2^15 * 8 bits of data + 2^11*49 bits of tag + 2^11*1 valid bits = 364,544 bits.
+
+
+### 5.3.2 Calculate the total number of bits required to implement a 64 KiB cache with 16-word blocks. How much bigger is this cache than the 32 KiB cache described in Exercise 5.3.1? (Notice that, by changing the block size, we doubled the amount of data without doubling the total size of the cache.)
+
+### 5.3.3 Explain why this 64 KiB cache, despite its larger data size, might provide slower performance than the first cache.
+
+### 5.3.4 Generate a series of read requests that have a lower miss rate on a 32 KiB two-way set associative cache than on the cache described in Exercise 5.3.1.
