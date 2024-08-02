@@ -1,8 +1,8 @@
-# InstructionSetSimulator
+# RISC-V Instruction Set Simulator
 
 A basic RISC-V simulator, implementing the RV32I Instructions.
 
-The project was done as part of the course 02155 Computer Architecture and Engineering at DTU.
+The project was part of the course 02155 Computer Architecture and Engineering at DTU.
 
 course website: https://courses.compute.dtu.dk/02155/
 
